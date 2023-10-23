@@ -60,8 +60,5 @@ def f_mod(fichier, index, mdp, key):
         f_writer = csv.writer(f)
         f_writer.writerows(lignes)
 
-def f_close(fichier):
-    fichier.close()
-
 if __name__ == "__main__":    
     print(f_compt("cool.csv"))
