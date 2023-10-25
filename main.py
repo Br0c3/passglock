@@ -6,7 +6,7 @@ import random
 import re
 from getpass import getpass
 
-Fic = re.compile("^[a-zA-Z0-9_\-]+\.csv+$")
+Fic = re.compile("^[a-zA-Z0-9_\-]+\.csv+$")  #regex décrivant le format du fichier
 
 #---------fonction de generation de mot de passe---------
 def genpwd():

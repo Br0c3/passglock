@@ -8,6 +8,15 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 def derive_key(password, salt):
+    """
+    Description of derive_key
+
+    Args:
+        password (undefined):
+        salt (undefined):
+
+    """
+    
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -18,6 +27,23 @@ def derive_key(password, salt):
     return key
 
 def encrypt(key, plaintext):
+    """
+    Description of encrypt
+
+    Args:
+        key (undefined):
+        plaintext (undefined):
+
+    """
+    """
+    Description of encrypt
+
+    Args:
+        key (undefined):
+        plaintext (undefined):
+
+    """
+   
     iv = os.urandom(16) 
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
     encryptor = cipher.encryptor()
@@ -27,6 +53,15 @@ def encrypt(key, plaintext):
     return b64encode(iv + ciphertext).decode()
 
 def decrypt(key, ciphertext):
+    """
+    Description of decrypt
+
+    Args:
+        key (undefined):
+        ciphertext (undefined):
+
+    """
+    
     ciphertext = b64encode(ciphertext)
     iv = ciphertext[:16]
     ciphertext = ciphertext[16:]
