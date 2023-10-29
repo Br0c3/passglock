@@ -1,5 +1,3 @@
-
-
 import encode
 import decode
 import csv
@@ -20,7 +18,8 @@ def f_list(fichier, key):
         tem=[]
         for ligne in f_reader:
             if c != 0:
-                ligne[3] = decode.crypt(ligne[3],key)
+                dec = decode.decoder(ligne[3],key)
+                ligne[3] = dec.crypt()
             
             tem.append(ligne)
             c+=1
@@ -105,7 +104,8 @@ def f_mod(fichier:str, index:str, mdp:str, key:str):
         lignes = list(f_reader)
         for i in range(len(lignes)):
             if lignes[i][0] == index:
-                lignes[i][3] = encode.crypt(mdp, key)
+                enc = encode.encoder(mdp, key)
+                lignes[i][3] = enc.crypt()
                                 
     with open(fichier, "w") as f:
         f_writer = csv.writer(f)

@@ -49,7 +49,8 @@ def coded ():
     print(":"*14,"ENCODAGE",":"*14)
     chaine = input("\n\033[33mEntrez le mots de passe a coder :: \033[0m")
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement :: \033[0m")
-    return encode.crypt(chaine.strip(),cle)
+    enc = encode.encoder(chaine.strip(),cle)
+    return enc.crypt()
 
 
 #-----------fonction de decodage de mot de passe----------- 
@@ -57,7 +58,8 @@ def uncoded ():
     print(":"*14,"DECODAGE",":"*14)
     chaine = input("\n\033[33mEntrez le mots de passe a decoder :: \033[0m")
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement ::\033[0m ")
-    return decode.crypt(chaine.strip(),cle)
+    dec = decode.decoder(chaine, cle)
+    return dec.crypt()
 
 #-----------fonction d'ouverture d'un nouveau fichier--------
 def init():
@@ -100,7 +102,8 @@ def add(fichier, key):
         else:
             da = input(f"\n\033[33mEntrez [{i}] :: \033[0m")
         data.append(da)
-    data[3] = encode.crypt(data[3], key)
+    enc = encode.encoder(data[3], key)
+    data[3] = enc.crypt()
     file.f_add(fichier, data, key)
 
 #----------fonction d'ajout de données----------
