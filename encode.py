@@ -1,6 +1,8 @@
 from base64 import *
+import django
 import sys, os
 import codecs
+from tqdm import tqdm
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -8,7 +10,10 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+from cryptography.hazmat.backends import default_backend
 import main
+
 
 
 class encoder():
@@ -35,10 +40,25 @@ class encoder():
         r = []
         for i in range(c):
             r.append(mot[i*long:(i+1)*long])
-        if len(mot) & long != 0:
+        if len(mot) % long != 0:
             r.append(mot[c*long:len(mot)])
         return r
         
+    def pad_string(self, mot):
+        block_size = algorithms.Blowfish.block_size // 8
+        padding_size = block_size - (len(mot) % block_size)
+        padding = bytes([padding_size]) * padding_size
+        return mot + padding
+    
+    def pad_desstring(self, mot):
+        block_size = algorithms.TripleDES.block_size // 8
+        padding_size = block_size - (len(mot) % block_size)
+        padding = bytes([padding_size]) * padding_size
+        return mot + padding
+
+    def unpad_string(self, mot):
+        padding_size = mot[-1]
+        return mot[:-padding_size]
 
 
     def cesar(self,mot,cle=4):
@@ -71,6 +91,7 @@ class encoder():
         r=""
         count=0
         l = self.spli(mot=mot,long=long)
+        print(l)
         for ex in l:
             for i in range(len(ex)):
                 r += chr(ord(ex[i])+cle[i])
@@ -162,40 +183,40 @@ class encoder():
         return r.decode()
 
 
-    def rotate2 (self,mot):
-        """
-        just en rot13
+    def rotate2 (self,plaintext):
 
-        Args:
-            mot (str):
-
-        """
-        r = codecs.encode(mot,"rot13")
-        return r
-
-    def nine (self,mot) :
-        """
-        juste base 32
-
-        Args:
-            mot (str): mot à encrypté
-        """
+        k = self.des_key()
+        backend = default_backend()
+        iv = os.urandom(8)
+        cipher = Cipher(algorithms.TripleDES(k), modes.CBC(iv), backend=backend)
+        encryptor = cipher.encryptor()
+        padded_plaintext = self.pad_desstring(plaintext.encode())
         
-        r = b32hexencode(mot.encode())
-        return r.decode()
+        ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+        return b64encode(iv + ciphertext).decode()
+
+    def nine (self,plaintext) :
+        backend = default_backend()
+        iv = os.urandom(8)
+        cipher = Cipher(algorithms.Blowfish(self.key), modes.CBC(iv), backend=backend)
+        encryptor = cipher.encryptor()
+        padded_plaintext = self.pad_string(plaintext.encode())
+        ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+        return b64encode(iv + ciphertext).decode()
 
 
     def zero(self,mot):
-        """
-        juste la réutiisation de la fonction vari 
+        backend = default_backend()
+        nonce = os.urandom(16)  # Nonce
+        # Création de l'objet Cipher avec l'algorithme ChaCha20
+        cipher = Cipher(algorithms.ChaCha20(self.key, nonce), mode=None, backend=backend)
 
-        Args:
-            mot (str): mot à encrypter
+        # Création de l'objet ChaCha20Poly1305 pour l'authentification
+        encryptor = cipher.encryptor()
+        # Chiffrement du texte en clair
+        ciphertext = encryptor.update(mot.encode()) + encryptor.finalize()
 
-        """
-        r = self.vari(mot)
-
-        return r
+        return b64encode(nonce + ciphertext).decode()
     #--------------generer la cle des chriffrements de bases----------
 
     def genkey(self):
@@ -209,7 +230,7 @@ class encoder():
             od =""
             for i in self.cle:
                 od += str(ord(i))
-            return od[8:]
+            return od[:15]
 
     #--------------generer la cle AES----------
 
@@ -226,6 +247,25 @@ class encoder():
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
+            salt=salt,
+            iterations=100000
+        )
+        key = kdf.derive(password)
+        return key
+    
+    def des_key(self, salt = b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e'):
+        """
+        Génération de la clé utiliser pour DES
+
+        Args:
+            password (str): la clé de chiffrement entrer par l'utiisateur
+            salt= (byte): la sel de généraisation
+
+        """
+        password = self.cle.encode()
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=16,
             salt=salt,
             iterations=100000
         )
@@ -261,14 +301,17 @@ class encoder():
 
         """
         
-        
         mot = self.mot
         dic = {"1":self.cesar,"2":self.vignere,"3":self.base,    "4":self.sub,  "5":self.rotate,
                "6":self.vari, "7":self.pase,   "8":self.rotate2, "9":self.nine, "0":self.zero}
         for i in self.clef:
             mot = dic[i](mot)
+            #print(i, ":", mot)
+        
         return self.aes( mot.encode())
 
 if __name__== "__main__":
-    enc = encoder("azer", "reza")
-    print(enc.crypt())
+    enc = encoder("passGlock45", "passck")
+    print(encoder.crypt(enc))
+    print("-"*10)
+    print(encoder.vignere(enc, "passG"))
