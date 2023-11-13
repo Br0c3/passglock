@@ -91,7 +91,6 @@ class encoder():
         r=""
         count=0
         l = self.spli(mot=mot,long=long)
-        print(l)
         for ex in l:
             for i in range(len(ex)):
                 r += chr(ord(ex[i])+cle[i])
@@ -311,7 +310,5 @@ class encoder():
         return self.aes( mot.encode())
 
 if __name__== "__main__":
-    enc = encoder("passGlock45", "passck")
+    enc = encoder("password", "passkeyyy")
     print(encoder.crypt(enc))
-    print("-"*10)
-    print(encoder.vignere(enc, "passG"))
