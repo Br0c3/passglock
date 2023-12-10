@@ -3,7 +3,7 @@ import decode
 import json
 from tabulate import tabulate
 
-class file():
+class File():
     """ Cette Classe s'occupe du fichier json et de gérer les mots de passes 
     qui y sont sauvegardés à l'aide des modules suivants:
     
@@ -127,5 +127,5 @@ class file():
             json.dump({"data": lignes}, f)
 
 if __name__ == "__main__":
-    fic =file("save.json","passck")
+    fic =File("save.json","passck")
     print(fic.f_compt())

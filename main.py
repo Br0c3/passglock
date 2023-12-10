@@ -52,10 +52,10 @@ def coded ():
     print(":"*14,"ENCODAGE",":"*14)
     # prise de la chaine à encoder
     chaine = input("\n\033[33mEntrez la chaine a encoder :: \033[0m")
-    #prise de la clé de chiffrement
+     # prise de la clé de chiffrement
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement :: \033[0m")
     # construction de l'objet encoder
-    enc = encode.encoder(chaine.strip(),cle)
+    enc = encode.Encoder(chaine.strip(),cle)
     # codage
     return enc.crypt()
 
@@ -63,87 +63,112 @@ def coded ():
 #-----------fonction de decodage de mot de passe----------- 
 def uncoded ():
     print(":"*14,"DECODAGE",":"*14)
+     # prise de la chaine à decoder
     chaine = input("\n\033[33mEntrez le mots de passe a decoder :: \033[0m")
+     # prise de la clé de chiffrement
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement ::\033[0m ")
+    # construction de l'objet decoder
     dec = decode.Decoder(chaine, cle)
     return dec.crypt()
 
 #-----------fonction d'ouverture d'un nouveau fichier--------
 def init():
     print(":"*14,"INITIAISATION D'UN NOUVEAU FICHIER",":"*14)
+    # le nom du fichier
     fichier = input("\n\033[33mEntrez le nom du nouveau fichier :: \033[0m")
+    # vérifier si le nom entré correspond avec le format attendu
     if not Fic.fullmatch(fichier):
+        #relever une erreur
         raise AssertionError
+    # prise de la clé de chiffrement
     key = getpass("\n\033[33mEntrez la clé du nouveau fichier :: \033[0m")
-    fic = file.file(fichier, key)
+    fic = file.File(fichier, key)
+    # initialliser le fichier
     fichier = fic.f_init()
+    # lancer menu secondaire
     scd(fic)
 
 #----------fonction d'ouverture d'un ancien fichier-----------
 def save():
     print(":"*14,"OUVETURE D'UN FICHIER",":"*14)
+    # le nom du fichier
     fichier = input("\n\033[33mEntrez le nom du fichier avec l'extantion csv :: \033[0m")
+    # vérifier si le nom entré correspond avec le format attendu
     if not Fic.fullmatch(fichier):
+        #relever une erreur
         raise AssertionError
+    # prise de la clé de chiffrement
     key = getpass("\n\033[33mEntrez la clé du fichier :: \033[0m")
+    #essayer d'ouvrir le fichier
     try:
-        fic = file.file(fichier, key)
+        fic = file.File(fichier, key)
         fichier = fic.f_open()
-    except FileNotFoundError:
+    except FileNotFoundError:#intercepter une erreur si le fichier n'existe pas
         print('\033[31m' + "Le fichier que vous avez choisi n'existe pas /!\\" + '\033[0m')
-    menup()
+    # lancer menu secondaire
+    scd(fic)
 
-#----------fonction d'ajout de données----------
-def add(fichier : file.file):
-        
+#----------fonction d'ajout de données a un objet File----------
+def add(fichier : file.File):
+    #liste des données à collecter  
     ha = [
         "Nom du site",
         "Identifiant (pseudo, e-mail ou numéro)",
         "Mot de passe"
         ]
-    data = [fichier.f_compt()]
+    
+    data = [fichier.f_compt()] #numéro d'index de notre dernière sauvegarde au premier indice de la nouvelle liste data
+    # parcourir la liste de données
     for i in ha:
+        # si la donnée demander est le mot de passe, 
         if i == "Mot de passe":
+            #proposer de générer le mot de passe 
             da = input(f"\n\033[33mEntrez [{i}] Tapez <g> pour générer un nouveau {i}:: \033[0m")
+            # si proposition selectionner, alors lancer la fonction de génération
             if da == "g":
                 da =genpwd()
                 print(f"Votre mot de passe est :: \033[32m {da} \033[0m")
+        #sinon recupérer la donnée dans la variable da
         else:
             da = input(f"\n\033[33mEntrez [{i}] :: \033[0m")
+        # ajouter a chaque e contenue de da dans la liste data
         data.append(da)
-    enc = encode.encoder(data[3], fichier.key)
+    # encoder le mot de pass a l'indice 3 de data
+    enc = encode.Encoder(data[3], fichier.key)
     data[3] = enc.crypt()
+    # enfin ajouter les données au fichier
     fichier.f_add(data= data)
 
-#----------fonction d'ajout de données----------
-def mod(fichier : file.file):
-    
+#----------fonction de modification de données sur un objet File----------
+def mod(fichier : file.File):
+    #liste des données à collecter 
     ha = [
         "Index",
         "Mot de passe"
         ]
+    #une liste vide data
     data = []
-    for i in ha:
-        if i == "Mot de passe":
+    for i in ha: # parcourir la liste de données
+        if i == "Mot de passe": # si la donnée demander est le mot de passe, 
             da = input(f"\n\033[33mEntrez [{i}] Tapez <g> pour générer un nouveau {i}:: \033[0m")
-            if da == "g":
+            if da == "g": # si proposition selectionner, alors lancer la fonction de génération
                 da =genpwd()
                 print(f"Votre mot de passe est :: \033[32m {da} \033[0m")
-        else:
+        else: #si la donnée demander est l'index, 
             da = input(f"\n\033[33mEntrez [{i}] :: \033[0m")
+            # si numéro d'index de notre dernière sauvegarde est inferieur a l'index entrer ou l'index entrer est négatif
             if int(da) > int(fichier.f_compt()) or int(da) < 0:
                 print('\033[31m' + "Choisissez un index présent dans votre fichier " + '\033[0m')
                 mod(fichier)
         data.append(da)
     #data[1] = encode.crypt(data[1],key)
+    # enfin enregistrer les enrégistrements
     fichier.f_mod(index= data[0],mdp= data[1])
 
 #----------fonction d'affichage de données----------
-def aff(fichier : file.file):
+def aff(fichier : file.File):
     fichier.f_list()
 
-def upload():
-    print("cette fonction n'est pas encore implèmentè")
 
 #---------------le menu principal-----------
 def menup ():
@@ -153,12 +178,13 @@ def menup ():
         1 : Générer un mot de passe\n
         2 : Encoder un mot de passe\n
         3 : Decoder un mot de passe\n
-        4 : Uploader une sauvegarde sur GOOGLE DRIVE\n
-        5 : Ouvrir un nouveau fichier de sauvegarde\n
-        6 : Ouvrir une sauvegarde existante \n
-        7 : Quitter le programme 
+        4 : Ouvrir un nouveau fichier de sauvegarde\n
+        5 : Ouvrir une sauvegarde existante \n
+        6 : Quitter le programme 
         """)
+    # récupérer le choix
     choix = input("\033[33mQuelle oppération voulez vous éffectuer ? :: \033[0m")
+    # retourner le choix 
     return choix
 
 #---------------le menu secondaire--------------
@@ -171,25 +197,31 @@ def menus(fichier):
         4 : Fermer le fichier\n
         5 : Quitter le programme 
         """)
+    # récupérer le choix
     choix = input("\033[33mQuelle oppération voulez vous éffectuer ? :: \033[0m")
+    # retourner le choix
     return choix
 
 #------------gestion du menu secondaire----------
-def scd(fichier : file.file):
-    while True:
-        choix = menus(fichier)
+def scd(fichier : file.File):
+    while True: # boucle infini
+        choix = menus(fichier) # recuperer le choix de l'utilisaeur a partie du menu secondaire 
+        # dictionnaire de correspondance entre les choix et les fonctions
         dict={"1":add,"2":mod,"3":aff,"4":prc,"5":exit}
-        if choix in "123":
+        if choix in "123": # les fonctions ayants besoin de paramettre
             dict[choix](fichier)
-        else:
+        elif choix in "45": # les autres fonctions
             dict[choix]()
+        else:
+            print('\033[31m' + "Option non prise en charge" + '\033[0m')
 
 #------------gestion du menu principal----------*
 def prc():
-    while True:
-        choix =menup()
-        maindict={"1":genpwd,"2":coded,"3":uncoded,"4":upload, "5":init, "6":save ,"7":exit}
-        try:
+    while True: # boucle infini
+        choix =menup() # recuperer le choix de l'utilisaeur a partie du menu principal
+        # dictionnaire de correspondance entre les choix et les fonctions
+        maindict={"1":genpwd,"2":coded,"3":uncoded, "4":init, "5":save ,"6":exit}
+        try: # essayer de lancer la fonction en utilisant le choix
             result=maindict[choix]()
         except KeyError:
             print('\033[31m' + "Option non prise en charge" + '\033[0m')
@@ -197,6 +229,7 @@ def prc():
         except AssertionError:
             print('\033[31m' + "Entrez le non du fichier avec l'extantion json " + '\033[0m')
             continue
+        # afficher le resulter de l'oppération
         print (f"Le resultat de votre opération est :: \033[32m {result} \033[0m")
 
 if __name__ =="__main__":

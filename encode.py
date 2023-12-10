@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 #from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
 
-class encoder():
+class Encoder():
     """ Cette classe crée des objets encoder qui s'occupent d'encoder la chaine de caractères 
     à l'aide des modues suivants:
 
@@ -408,5 +408,5 @@ class encoder():
         return self.aes( mot.encode())
 
 if __name__== "__main__":
-    enc = encoder("password", "hnbgdmwqazs")
-    print(encoder.pase(enc,"kaz"))
+    enc = Encoder("password", "hnbgdmwqazs")
+    print(Encoder.pase(enc,"kaz"))

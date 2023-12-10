@@ -9,8 +9,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 # from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 # from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-
-
 # from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
 
 class Decoder:
@@ -186,7 +184,6 @@ class Decoder:
         k = self.des_key()
         backend = default_backend()
         ciphertext = b64decode(ciphertext.encode())
-        print(ciphertext)
         iv = ciphertext[:8]
         ciphertext = ciphertext[8:]
         cipher = Cipher(algorithms.CAST5(k), modes.CBC(iv), backend=backend)
@@ -208,7 +205,6 @@ class Decoder:
         k = self.des_key()
         backend = default_backend()
         ciphertext = b64decode(ciphertext.encode())
-        print(ciphertext)
         iv = ciphertext[:16]
         ciphertext = ciphertext[16:]
         cipher = Cipher(algorithms.Camellia(k), modes.CBC(iv), backend=backend)
