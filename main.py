@@ -10,13 +10,15 @@ Fic = re.compile("^[a-zA-Z0-9_\-]+\.json+$")#regex décrivant le format du fichi
 
 #---------fonction de generation de mot de passe---------
 def genpwd():
-    #precision du nombre de caractere
     print(":"*14,"GENERATION",":"*14)
+    #precision du nombre de caractere
     size = input("\n\033[33mCombient de caractères voulez vous que votre chaine contienne? :: \033[0m")
+    #vérifier l'entrer de l'utilisateur
     try:
         size =int(size)
     except:
             print("\033[31m" + "votre choix doit seulement comporter des chiffres" + "\033[0m")
+            # rappeler la fonction si l'erreur est relever
             genpwd()
     #les caracteres autorisee
     car = input("""\n\nLes caractères autorisés \n
@@ -24,32 +26,37 @@ def genpwd():
         b: pour les nombres \n
         c: pour des ponctuations\n
       \033[33m(ex:acb pour sélectionner toutes les options) :: \033[0m""")
-
+    # ce dictionnaire aide à faire correspondre les lettres sélectionner avec les types de caractère
     carl={"a":string.ascii_letters, "b":string.digits, "c":string.punctuation}
     #formatage des caractere autorisee dans cara
     cara =""
     for i in car :
+        # pour concatener proprement les chaines de caractère dans cara ln vérifie si chaque caractère est une clé du dict carl(a,b,c)
         try:
             cara+=carl[i]
         except:
             print("\033[31m" + "votre choix doit seulement comporter les lettres a b et c" + "\033[0m")
+             # rappeler la fonction si l'erreur est relever
             genpwd()
-
-
+            
     password = ""
     
-    #boucle de generation
+    #boucle de generation en sélectionnant les caractères au hasard dans le str cara
     for i in range(size):
         password += random.choice(cara)
-
+    #retourner la chaine de caractère générée
     return password
 
 #-----------fonction d'encodage de mot de passe-----------
 def coded ():
     print(":"*14,"ENCODAGE",":"*14)
-    chaine = input("\n\033[33mEntrez le mots de passe a coder :: \033[0m")
+    # prise de la chaine à encoder
+    chaine = input("\n\033[33mEntrez la chaine a encoder :: \033[0m")
+    #prise de la clé de chiffrement
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement :: \033[0m")
+    # construction de l'objet encoder
     enc = encode.encoder(chaine.strip(),cle)
+    # codage
     return enc.crypt()
 
 
@@ -58,7 +65,7 @@ def uncoded ():
     print(":"*14,"DECODAGE",":"*14)
     chaine = input("\n\033[33mEntrez le mots de passe a decoder :: \033[0m")
     cle = getpass("\n\033[33mEntrez votre clé de chiffrement ::\033[0m ")
-    dec = decode.decoder(chaine, cle)
+    dec = decode.Decoder(chaine, cle)
     return dec.crypt()
 
 #-----------fonction d'ouverture d'un nouveau fichier--------
@@ -84,7 +91,7 @@ def save():
         fichier = fic.f_open()
     except FileNotFoundError:
         print('\033[31m' + "Le fichier que vous avez choisi n'existe pas /!\\" + '\033[0m')
-    scd(fic)
+    menup()
 
 #----------fonction d'ajout de données----------
 def add(fichier : file.file):

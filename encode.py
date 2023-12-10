@@ -1,23 +1,50 @@
-from base64 import *
-import django
-import sys, os
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import codecs
-from tqdm import tqdm
-from cryptography.fernet import Fernet
+import sys,os
+#import django
+from base64 import *
+#from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-#from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
-from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.hazmat.backends import default_backend
-import main
-
-
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+#from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+#from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+#from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
 
 class encoder():
+    """ Cette classe crée des objets encoder qui s'occupent d'encoder la chaine de caractères 
+    à l'aide des modues suivants:
+
+    cesar:    un chiffrement de césar
+    vignere:  un chiffrement de vigénère
+        split: s'occupe sessionner la chaine selon la longueur de la clé vigénère
+    base:     encdage par ascii85 et base64
+    sub:      chiffrement par substitution
+    rotate:   chiffrement par rot13 et par base32
+    vari:     chiffrement par CAST5
+    pase:     chiffrement par Camellia
+    rotate2:  chiffrement par TripleDES
+    nine:     chiffrement par BlowFish
+    zero:     chiffrement par Chacha20
+    crypt:    s'occupe de crypter la chaine en fonction de la clé d'ordre
+
+    la clé d'ordre est l'une des clés générées à partie de la clé entrée par l'utilisateur elle est contituée des chiffres 
+    représentant chacun un des modules citées précédemment. Elle détermine l'ordre dans lequel les modules doivent s'exercuter 
+    pour crypter la chaine
+    """
+    
     def __init__(self, mot:str, cle:str) -> None:
+        """
+        le constructeur de notre classe
+
+        Args:
+            mot (str): la chaine à chiffrer
+            cle (str): la clé de chiffrement
+
+        """
         
         self.mot = mot
         self.cle = cle
@@ -27,10 +54,11 @@ class encoder():
 
     def spli(self, mot,long):
         """
-        cette fonctoin se charge de diviser une chaine de caractère en sessions contenus dans une liste
+        cette fonctoin se charge de diviser une chaine de caractère en sessions 
+        contenus dans une liste pour le chiffrement de vigénère
 
         Args:
-            mot (str): la chaîne de caractère à diviser
+            mot (str): la chaîne de caractère à sessionner
             long (int): la longueur de chaque session
         Return:
             r (list): la list contenant les sessions
@@ -44,26 +72,62 @@ class encoder():
             r.append(mot[c*long:len(mot)])
         return r
         
-    def pad_string(self, mot):
+
+    def pad_string(self, mot:bytes):
+        """
+        fonction de padding Blowfish
+
+        Args:
+            mot (bytes): l'expression a padder
+
+        """
         block_size = algorithms.Blowfish.block_size // 8
         padding_size = block_size - (len(mot) % block_size)
         padding = bytes([padding_size]) * padding_size
         return mot + padding
     
     def pad_desstring(self, mot):
+        """
+        fonction de padding TripleDES
+
+        Args:
+            mot (bytes): l'expression a padder
+
+        """
         block_size = algorithms.TripleDES.block_size // 8
         padding_size = block_size - (len(mot) % block_size)
         padding = bytes([padding_size]) * padding_size
         return mot + padding
+    
+    def pad_casstring(self, mot):
+        """
+        fonction de padding CAST5
 
-    def unpad_string(self, mot):
-        padding_size = mot[-1]
-        return mot[:-padding_size]
+        Args:
+            mot (bytes): l'expression a padder
 
+        """
+        block_size = algorithms.CAST5.block_size // 8
+        padding_size = block_size - (len(mot) % block_size)
+        padding = bytes([padding_size]) * padding_size
+        return mot + padding
+    
+    def pad_camstring(self, mot):
+        """
+        fonction de padding Camellia
+
+        Args:
+            mot (bytes): l'expression a padder
+
+        """
+        block_size = algorithms.Camellia.block_size // 8
+        padding_size = block_size - (len(mot) % block_size)
+        padding = bytes([padding_size]) * padding_size
+        return mot + padding
 
     def cesar(self,mot,cle=4):
         """
-        encrypte le mot avec un chiffrement de césar avec la clé
+        encrypte le mot avec un chiffrement de césar
 
         Args:
             mot (str): le mot à encrypté
@@ -79,7 +143,7 @@ class encoder():
 
     def vignere (self,mot, cle=[2,3,3,1]):
         """
-        chiffrement de vigenère du mot avec la clé
+        chiffrement de vigenère du mot 
 
         Args:
             mot (str): le mot à encrypté
@@ -154,36 +218,55 @@ class encoder():
 
         return r
 
-    def vari (self,mot):
+    def vari (self, plaintext:str):
         """
-        chiffrer le mot d'abbord avec base-32 puis en base-64
+        chiffrement par CAST5
 
         Args:
-            mot (undefined): mot à encrypté
+            plaintext (str): chaine à encryptée
+
+        Return: la chaine encrypter 
 
         """
-        r = b32hexencode(mot.encode())
-        r = b64encode(r)
-        
-        return r.decode()
+        k = self.des_key()
+        backend = default_backend()
+        iv = os.urandom(8)
+        cipher = Cipher(algorithms.CAST5(k), modes.CBC(iv), backend=backend)
+        encryptor = cipher.encryptor()
+        padded_plaintext = self.pad_casstring(plaintext.encode())
+        ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+        return b64encode(iv + ciphertext).decode()
 
-    def pase (self, mot):
-        
+    def pase (self, plaintext):
         """
-        chiffrer le mot d'abbord avec de l'base-85 puis en base-16
+        chiffrement par Camellia
 
         Args:
-            mot (str): mot à encryté
+            plaintext (str): chaine à encryptée
+
+        Return: la chaine encrypter 
 
         """
-        r = b85encode(mot.encode())
-        r = b16encode(r)
-
-        return r.decode()
+        k = self.des_key()
+        backend = default_backend()
+        iv = os.urandom(16)
+        cipher = Cipher(algorithms.Camellia(k), modes.CBC(iv), backend=backend)
+        encryptor = cipher.encryptor()
+        padded_plaintext = self.pad_camstring(plaintext.encode())
+        ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+        return b64encode(iv + ciphertext).decode()
 
 
     def rotate2 (self,plaintext):
+        """
+        chiffrement par TripleDES
 
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encrypter 
+
+        """
         k = self.des_key()
         backend = default_backend()
         iv = os.urandom(8)
@@ -195,6 +278,14 @@ class encoder():
         return b64encode(iv + ciphertext).decode()
 
     def nine (self,plaintext) :
+        """
+        chiffrement par Blowfish
+
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encrypter 
+        """
         backend = default_backend()
         iv = os.urandom(8)
         cipher = Cipher(algorithms.Blowfish(self.key), modes.CBC(iv), backend=backend)
@@ -205,6 +296,13 @@ class encoder():
 
 
     def zero(self,mot):
+        """
+        chiffrement par Chacha20
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encryptée
+        """
         backend = default_backend()
         nonce = os.urandom(16)  # Nonce
         # Création de l'objet Cipher avec l'algorithme ChaCha20
@@ -220,7 +318,7 @@ class encoder():
 
     def genkey(self):
             """
-            Génération de la clé utiliser pour encrypter le mot
+            Génération de la clé d'ordre utilisée pour encrypter le mot
 
             Args:
                 mdp (str): la clé de chiffrement entrer par l'utiisateur
@@ -235,7 +333,7 @@ class encoder():
 
     def aes_key(self, salt = b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e'):
         """
-        Génération de la clé utiliser pour AES
+        Génération de la clé AES
 
         Args:
             password (str): la clé de chiffrement entrer par l'utiisateur
@@ -254,7 +352,7 @@ class encoder():
     
     def des_key(self, salt = b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e'):
         """
-        Génération de la clé utiliser pour DES
+        Génération de la clé utiliser pour TripleDES
 
         Args:
             password (str): la clé de chiffrement entrer par l'utiisateur
@@ -310,5 +408,5 @@ class encoder():
         return self.aes( mot.encode())
 
 if __name__== "__main__":
-    enc = encoder("password", "passkeyyy")
-    print(encoder.crypt(enc))
+    enc = encoder("password", "hnbgdmwqazs")
+    print(encoder.pase(enc,"kaz"))

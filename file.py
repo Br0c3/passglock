@@ -1,36 +1,42 @@
 import encode
 import decode
-import csv
 import json
 from tabulate import tabulate
 
 class file():
+    """ Cette Classe s'occupe du fichier json et de gérer les mots de passes 
+    qui y sont sauvegardés à l'aide des modules suivants:
     
-    def __init__(self, fichier, key) -> None:
+    f_list: affiche un tableau contenant les données décrypter
+        json2list: convertie un objet json en list
+    f_init: cré un nouveau fichier de sauvegarde
+    f_open: ouvre un fichier de sauvegarde existant
+    f_add: ajoute des données au fichier en parammètre
+    f_mod: modifi un mot de passe dans le fichier
+      """
+    
+    def __init__(self, fichier:str, key:str) -> None:
+        """
+        le constructeur de notre classe
+
+        Args:
+            fichier (str): le chemin du fichier
+            key (str): la clé de chiffrement du fichier
+
+        """
        
         self.fichier = fichier
         self.key = key
 
-    def list2json(self, listes : list):
-        temp = []
-
-        for liste in listes:
-            dico ={}
-            cles = [
-            "Index" ,
-            "Nom du site",
-            "Identifiant (pseudo, e-mail ou numéro)",
-            "Mot de passe"
-            ]
-            for i in range(len(liste)):
-                dico[cles[i]] = liste[i]
-
-            temp.append(dico)
-        
-        return {"data": temp}
-    
     def json2list(self, dictJsn):
+        """
+        conversion d'un dictionnaire en liste
 
+        Args:
+            dictJsn (dict): le dictionnaire à convertir
+
+        """
+    
         liste = dictJsn["data"]
         liste = [list(liste[i].values()) for i in range(len(liste))]
         liste.insert(0, ["Index" , "Nom du site", "Identifiant (pseudo, e-mail ou numéro)", "Mot de passe"])
@@ -38,6 +44,10 @@ class file():
 
 
     def f_list(self):
+        """
+        affichage des données contenues dans le fichier
+
+        """
       
         with open(self.fichier, "r+") as f:
             dico = json.load(f)
@@ -46,7 +56,7 @@ class file():
         tem=[]
         for ligne in f_reader:
             if c != 0:
-                dec = decode.decoder(ligne[3],self.key)
+                dec = decode.Decoder(ligne[3],self.key)
                 ligne[3] = dec.crypt()
             
             tem.append(ligne)
@@ -54,13 +64,20 @@ class file():
         print(tabulate(tem, tablefmt="rounded_grid", maxcolwidths=[None,None,15, 20], stralign="center"))
 
     def f_compt(self):
+        """
+        fonction pour compter le nombre d'index dans le fichier
+
+        """
         
         with open(self.fichier, "r+") as f:
             dico = json.load(f)
             return len(dico["data"])
 
     def f_init(self):
-        
+        """
+        fonction pour ouvrir et créer un nouveau fichier
+
+        """
         # initier un nuveau fichier json 
         with open(self.fichier, "w") as f:
             json.dump({"data":[]}, f)
@@ -68,12 +85,17 @@ class file():
         return self.fichier
 
     def f_open(self):
-        
+        """
+        fonction pour ouvrir un fichier exixtant
+        """
         # ouvrir un fichier json
         self.f_list()
         return self.fichier
 
     def f_add(self, data:list):
+        """
+        fonction pour ajouter des données au fichier
+        """
         dat ={}
         cles = [
             "Index" ,
@@ -92,7 +114,9 @@ class file():
         self.f_list()
 
     def f_mod(self, index:str, mdp:str):
-        
+        """
+        fonction pour modifier les données d'un fichier
+        """
         with open(self.fichier, "r+") as f:
             dico = json.load(f)
             lignes = dico["data"]
@@ -103,5 +127,5 @@ class file():
             json.dump({"data": lignes}, f)
 
 if __name__ == "__main__":
-    fic =file("save.csv","passck")
+    fic =file("save.json","passck")
     print(fic.f_compt())

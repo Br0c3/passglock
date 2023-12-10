@@ -1,31 +1,58 @@
-from base64 import *
-import sys, os
 import codecs
-from cryptography.fernet import Fernet
+# import sys,os
+from base64 import *
+# from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-#from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
-from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
 from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+# from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+# from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-class decoder():
-    
-    def __init__(self, mot:str, cle:str) -> None:
-        
+
+# from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
+
+class Decoder:
+    """ Cette classe crée des objets decoder qui s'occupent de décoder la chaine de caractères
+    à l'aide des modues suivants:
+
+    cesar:    un chiffrement de césar
+    vignere:  un chiffrement de vigénère
+        split: s'occupe sessionner la chaine selon la longueur de la clé vigénère
+    base:     encdage par ascii85 et base64
+    sub:      chiffrement par substitution
+    rotate:   chiffrement par rot13 et par base32
+    vari:     chiffrement par CAST5
+    pase:     chiffrement par Camellia
+    rotate2:  chiffrement par TripleDES
+    nine:     chiffrement par BlowFish
+    zero:     chiffrement par Chacha20
+    crypt:    s'occupe de crypter la chaine en fonction de la clé d'ordre
+
+    la clé d'ordre est l'une des clés générées à partie de la clé entrée par l'utilisateur elle est contituée des chiffres 
+    représentant chacun un des modules citées précédemment. Elle détermine l'ordre dans lequel les modules doivent s'exercuter 
+    pour décrypter la chaine
+    """
+
+    def __init__(self, mot: str, cle: str) -> None:
+        """
+        le constructeur de notre classe
+
+        Args:
+            mot (str): la chaine à chiffrer
+            cle (str): la clé de chiffrement
+
+        """
         self.mot = mot
         self.cle = cle
         self.key = self.aes_key()
         self.clef = self.genkey()
 
-
-
-
-    def spli(self ,mot, long) -> list:
+    def spli(self, mot, long) -> list:
         """
-        cette fonctoin se charge de diviser une chaine de caractère en sessions contenus dans une liste
+        cette fonctoin se charge de diviser une chaine de caractère en sessions
+        contenus dans une liste pour le chiffrement de vigénère
 
         Args:
             mot (str): la chaîne de caractère à diviser
@@ -37,25 +64,19 @@ class decoder():
         c = len(mot) // long
         r = []
         for i in range(c):
-            
-            r.append(mot[i*long:(i+1)*long])
+            r.append(mot[i * long:(i + 1) * long])
         if len(mot) % long != 0:
-            r.append(mot[c*long:len(mot)])
+            r.append(mot[c * long:len(mot)])
         return r
 
-    def pad_string(self, mot):
-        block_size = algorithms.Blowfish.block_size // 8
-        padding_size = block_size - (len(mot) % block_size)
-        padding = bytes([padding_size]) * padding_size
-        return mot + padding
-    
-    def pad_desstring(self, mot):
-        block_size = algorithms.TripleDES.block_size // 8
-        padding_size = block_size - (len(mot) % block_size)
-        padding = bytes([padding_size]) * padding_size
-        return mot + padding
-
     def unpad_string(self, mot):
+        """
+        fonction d'unpadding
+
+        Args:
+            mot (bytes): l'expression a padder
+
+        """
         padding_size = mot[-1]
         return mot[:-padding_size]
 
@@ -70,12 +91,12 @@ class decoder():
             r (str): le mot decrypté 
 
         """
-        r =''
-        for i in mot :
-            r += chr(ord(i)-cle)
+        r = ''
+        for i in mot:
+            r += chr(ord(i) - cle)
         return r
 
-    def vignere (self, mot, cle=[2,3,3,1]) -> str:
+    def vignere(self, mot, cle=[2, 3, 3, 1]) -> str:
         """
         déchiffrement de vigenère du mot avec la clé
 
@@ -85,17 +106,17 @@ class decoder():
         Return:
             r (str): le mot decrypté
         """
-        long= len(cle)
-        r=""
-        count=0
+        long = len(cle)
+        r = ""
+        count = 0
         l = self.spli(mot=mot, long=long)
         for ex in l:
-            
+
             for i in range(len(ex)):
-                r += chr(ord(ex[i])-cle[i])
+                r += chr(ord(ex[i]) - cle[i])
         return r
 
-    def base (self, mot)-> str:
+    def base(self, mot) -> str:
         """
         dechiffrer le mot d'abbord avec  base-64 puis en ascii-85 
 
@@ -105,13 +126,12 @@ class decoder():
             r (str): le mot decrypté
 
         """
-        temp= b64decode(mot.encode())
+        temp = b64decode(mot.encode())
         bas = a85decode(temp)
 
         return bas.decode()
 
-
-    def sub (self,mot) -> str:
+    def sub(self, mot) -> str:
         """
         dechiffrement du mot par substitution 
 
@@ -119,28 +139,28 @@ class decoder():
             mot (str): mot à decrypté 
 
         """
-        r =""
+        r = ""
         sublist = {
-                    "a":"й","b":"ц","c":"у","d":"к",
-                    "e":"е","f":"н","g":"г","h":"ш",
-                    "i":"щ","j":"з","k":"х","l":"ф",
-                    "m":"ы","n":"в","o":"а","p":"п",
-                    "q":"р","r":"о","s":"л","t":"д",
-                    "u":"ж","v":"э","w":"я","x":"ч",
-                    "y":"с","z":"м","A":"Ю","B":"Б",
-                    "C":"Ь","D":"Т","E":"И","F":"М",
-                    "G":"С","H":"Ч","I":"Я","J":"Э",
-                    "K":"Ж","L":"Д","M":"Л","N":"О",
-                    "O":"Р","P":"П","Q":"А","R":"В",
-                    "S":"Ы","T":"Ф","U":"Х","V":"З",
-                    "W":"Щ","X":"Ш","Y":"Г","Z":"Н"
-                }
+            "a": "й", "b": "ц", "c": "у", "d": "к",
+            "e": "е", "f": "н", "g": "г", "h": "ш",
+            "i": "щ", "j": "з", "k": "х", "l": "ф",
+            "m": "ы", "n": "в", "o": "а", "p": "п",
+            "q": "р", "r": "о", "s": "л", "t": "д",
+            "u": "ж", "v": "э", "w": "я", "x": "ч",
+            "y": "с", "z": "м", "A": "Ю", "B": "Б",
+            "C": "Ь", "D": "Т", "E": "И", "F": "М",
+            "G": "С", "H": "Ч", "I": "Я", "J": "Э",
+            "K": "Ж", "L": "Д", "M": "Л", "N": "О",
+            "O": "Р", "P": "П", "Q": "А", "R": "В",
+            "S": "Ы", "T": "Ф", "U": "Х", "V": "З",
+            "W": "Щ", "X": "Ш", "Y": "Г", "Z": "Н"
+        }
         for i in sublist.keys():
-            mot = mot.replace(sublist[i],i)
+            mot = mot.replace(sublist[i], i)
 
         return mot
 
-    def rotate (self, mot) -> str:
+    def rotate(self, mot) -> str:
         """
         déchiffrer le mot d'abbord avec de rot13 puis en base-32
 
@@ -148,38 +168,65 @@ class decoder():
             mot (str): mot a decrypté
 
         """
-        mot = codecs.decode(mot,"rot13")
+        mot = codecs.decode(mot, "rot13")
         r = b32decode(mot.encode())
 
         return r.decode()
 
-    def vari (self, mot) -> str:
+    def vari(self, ciphertext):
         """
-        dechiffrer le mot d'abbord avec base-64 puis en base-32
+        déchiffrement par CAST5
 
         Args:
-            mot (undefined): mot à decrypté
+            plaintext (str): chaine à encryptée
+
+        Return: la chaine encrypter 
 
         """
-        r = b64decode(mot.encode())
-        r = b32hexdecode(r)
+        k = self.des_key()
+        backend = default_backend()
+        ciphertext = b64decode(ciphertext.encode())
+        print(ciphertext)
+        iv = ciphertext[:8]
+        ciphertext = ciphertext[8:]
+        cipher = Cipher(algorithms.CAST5(k), modes.CBC(iv), backend=backend)
+        decryptor = cipher.decryptor()
+        padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+        plaintext = self.unpad_string(padded_plaintext)
+        return plaintext.decode()
 
-        return r.decode()
-
-    def pase(self, mot) -> str:
+    def pase(self, ciphertext):
         """
-        dechiffrer le mot d'abbord avec de l'base-16 puis en base-85
+        déchiffrement par Camellia
 
         Args:
-            mot (str): mot à decryté
+            plaintext (str): chaine à encryptée
+
+        Return: la chaine encrypter 
 
         """
-        r = b16decode(mot.encode())
-        r = b85decode(r)
+        k = self.des_key()
+        backend = default_backend()
+        ciphertext = b64decode(ciphertext.encode())
+        print(ciphertext)
+        iv = ciphertext[:16]
+        ciphertext = ciphertext[16:]
+        cipher = Cipher(algorithms.Camellia(k), modes.CBC(iv), backend=backend)
+        decryptor = cipher.decryptor()
+        padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+        plaintext = self.unpad_string(padded_plaintext)
+        return plaintext.decode()
 
-        return r.decode()
-    
-    def rotate2 (self, ciphertext) -> str:
+    def rotate2(self, ciphertext) -> str:
+        """
+        déchiffrement par TripleDES
+
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encrypter 
+
+        """
         k = self.des_key()
         backend = default_backend()
         ciphertext = b64decode(ciphertext.encode())
@@ -190,9 +237,16 @@ class decoder():
         padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
         plaintext = self.unpad_string(padded_plaintext)
         return plaintext.decode()
-    
-    def nine (self, ciphertext) -> str:
 
+    def nine(self, ciphertext) -> str:
+        """
+        déchiffrement par Blowfish
+
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encrypter 
+        """
         backend = default_backend()
         ciphertext = b64decode(ciphertext.encode())
         iv = ciphertext[:8]
@@ -203,7 +257,14 @@ class decoder():
         plaintext = self.unpad_string(padded_plaintext)
         return plaintext.decode()
 
-    def zero(self,mot):
+    def zero(self, mot):
+        """
+        déchiffrement par Chacha20
+        Args:
+            plaintext (str): chaine à encrypter
+
+        Return: la chaine encryptée
+        """
         mot = b64decode(mot.encode())
         nonce = mot[:16]
         mot = mot[16:]
@@ -218,22 +279,22 @@ class decoder():
 
         return ciphertext.decode()
 
-    #--------------generer la cle des chriffrements de bases----------
+    # --------------generer la cle des chriffrements de bases----------
     def genkey(self) -> str:
-            """
-            Génération de la clé utiliser pour encrypter le mot
+        """
+            Génération de la clé d'ordre
 
             Args:
                 mdp (str): la clé de chiffrement entrer par l'utiisateur
 
             """
-            od =""
-            for i in self.cle:
-                od += str(ord(i))
-            return od[:15]
+        od = ""
+        for i in self.cle:
+            od += str(ord(i))
+        return od[:15]
 
-    #--------------generer la cle AES----------
-    def aes_key(self, salt = b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e') -> bytes:
+    # --------------generer la cle AES----------
+    def aes_key(self, salt=b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e') -> bytes:
         """
         Génération de la clé utiliser pour AES
 
@@ -251,11 +312,10 @@ class decoder():
         )
         key = kdf.derive(password)
         return key
-    
 
-    def des_key(self, salt = b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e'):
+    def des_key(self, salt=b'\xc1g\x98Vbf\xd1\xcdRd\xfe\x8d\xf1\xf4/\x8e'):
         """
-        Génération de la clé utiliser pour AES
+        Génération de la clé utiliser pour TripleDES
 
         Args:
             password (str): la clé de chiffrement entrer par l'utiisateur
@@ -271,7 +331,8 @@ class decoder():
         )
         key = kdf.derive(password)
         return key
-    #--------------chriffrement  AES----------
+
+    # --------------chriffrement  AES----------
     def aes(self, mot) -> str:
         """
         la fonction de dechiffrement par AES
@@ -301,18 +362,18 @@ class decoder():
         try:
             mot = self.mot
             mot = self.aes(mot)
-                
-            dic = {"1":self.cesar, "2":self.vignere, "3":self.base,    "4":self.sub,  "5":self.rotate,
-                "6":self.vari,  "7":self.pase,    "8":self.rotate2, "9":self.nine, "0":self.zero}
+
+            dic = {"1": self.cesar, "2": self.vignere, "3": self.base, "4": self.sub, "5": self.rotate,
+                   "6": self.vari, "7": self.pase, "8": self.rotate2, "9": self.nine, "0": self.zero}
             for i in self.clef[::-1]:
                 mot = dic[i](mot)
-                #print(i, ":", mot)
+                # print(i, ":", mot)
             return mot
         except ValueError:
             print('\033[31m' + "Votre mot de passe est incorrect" + '\033[0m')
             exit()
-            
-        
-if __name__== "__main__":
-    dec = decoder("ZfmemB+8oWjAMgGT3m4390XEB/9nfUSrUn4nLAt9KPe4r2O4fJtdu9wVLQbzR4s8b/Qbjz6Jiqyngnnmpw4aFYGbV6y6IMZeHJh7ZvtOvR37Ffh6KtUEvLs55aziUOaNO0bLH5HJUMsNggGQHWPS1MK2oi42ZM4i8q7U+xFkCtkCSSS16i0MWJt1QC5xV289m6VKpBOO9U9kXvn4VwN9L5BuARCNZiTLN5LUY+n86R8rEBLvtY4xcXpEXwmy1CjkTOAXi0ank/0rCpSozBK0uzTI4Nr+Cebp5wQP/aIrea43V2VLCOdmmk+aJB0naRWQFyyp5M8GSWLYYxTjjCm1wzVkJxmjGQ5SJL3gPULv48BOC9qA6ax7MIRiPjezUmB34Mo2cna4gHiYkyPjFqqGhJ/Iv6RfHZkMsxouSgYf7TO5cGVQ6n28RnNhUgEiEp/0j4FpTG2SuJXp8Wp5XIWkXCC0V/vK2vk31CorKCRWr+PjnqO/1AWSH4EI79I8RhPUOusAyfFTRo94R3vRHZsnRR69am9IRuAPO5r1dPX2tEpTWk2KjXaOEDCxMj68/rIgHmHA+RUienIwypkY0UyhPTZahx+5szEArnleKx9g9DQ+6y4QQbetNkUunQckzNbCsayv1SdPojm1c0DXpVIxb5xk7qoe6oGE+xB1VQeMV9r6SrahsUV/uEukW8Svr9N3qgvjcbbu1yQ42y5hd6/cAiO96tONv+g9B7QNyF4MlKSeMLCWgIiFOAebpzcSp5RiDwPkvkUdZ9sPF5aXnx2LWvUp+F72SpB/GP/ZLHsgxJM1uuuw0xLbFIsHjfXbxyjnfRUgIoLyy0GFIGRyx6dCTbF9s2/DtZtNuc+xE/cyY+vM0NqHJLDj2rxTIFwrXG5PyUZLSvZ8rVCTdNitwDPyUlx+PVovv9yk13dci8pWZMG9SvHuEP1hw50BqGHyHiKw33R6VQT4RPNeEbtfhA4JZi/5iwQkK0YqVvBdvPljNK/QShuXEoLNO8oPPnvR3cgg", "passkeyyy")
-    print(decoder.crypt(dec))
+
+
+if __name__ == "__main__":
+    dec = Decoder("", "hnbgdmwqazs")
+    print(Decoder.pase(dec, "Lutc6LOzaeZV6R91VMnskcTM/BGpk1ZcaDVTPbtgtJo="))
