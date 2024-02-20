@@ -9,6 +9,8 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 # from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 # from cryptography.hazmat.primitives.kdf.pbkdf2 import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
+
 # from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
 
 class Decoder:
@@ -28,9 +30,9 @@ class Decoder:
     zero:     chiffrement par Chacha20
     crypt:    s'occupe de crypter la chaine en fonction de la clé d'ordre
 
-    la clé d'ordre est l'une des clés générées à partie de la clé entrée par l'utilisateur elle est contituée des chiffres 
-    représentant chacun un des modules citées précédemment. Elle détermine l'ordre dans lequel les modules doivent s'exercuter 
-    pour décrypter la chaine
+    la clé d'ordre est l'une des clés générées à partie de la clé entrée par l'utilisateur elle est contituée
+    des chiffres représentant chacun un des modules citées précédemment. Elle détermine l'ordre dans lequel
+    les modules doivent s'exercuter pour décrypter la chaine
     """
 
     def __init__(self, mot: str, cle: str) -> None:
@@ -84,7 +86,7 @@ class Decoder:
 
         Args:
             mot (str): le mot à decrypté
-            cle=4 (int): la cé
+            cle (int): la cé
         Return:
             r (str): le mot decrypté 
 
@@ -94,7 +96,7 @@ class Decoder:
             r += chr(ord(i) - cle)
         return r
 
-    def vignere(self, mot, cle=[2, 3, 3, 1]) -> str:
+    def vignere(self, mot, cle=(2, 3, 3, 1)) -> str:
         """
         déchiffrement de vigenère du mot avec la clé
 
@@ -106,7 +108,7 @@ class Decoder:
         """
         long = len(cle)
         r = ""
-        count = 0
+        # count = 0
         l = self.spli(mot=mot, long=long)
         for ex in l:
 
@@ -176,7 +178,7 @@ class Decoder:
         déchiffrement par CAST5
 
         Args:
-            plaintext (str): chaine à encryptée
+            ciphertext (str): chaine à encryptée
 
         Return: la chaine encrypter 
 
@@ -197,7 +199,7 @@ class Decoder:
         déchiffrement par Camellia
 
         Args:
-            plaintext (str): chaine à encryptée
+            ciphertext (str): chaine à encryptée
 
         Return: la chaine encrypter 
 
@@ -218,7 +220,7 @@ class Decoder:
         déchiffrement par TripleDES
 
         Args:
-            plaintext (str): chaine à encrypter
+            ciphertext (str): chaine à encrypter
 
         Return: la chaine encrypter 
 
@@ -239,7 +241,7 @@ class Decoder:
         déchiffrement par Blowfish
 
         Args:
-            plaintext (str): chaine à encrypter
+            ciphertext (str): chaine à encrypter
 
         Return: la chaine encrypter 
         """
@@ -257,7 +259,7 @@ class Decoder:
         """
         déchiffrement par Chacha20
         Args:
-            plaintext (str): chaine à encrypter
+            mot (str): chaine à encrypter
 
         Return: la chaine encryptée
         """
@@ -281,7 +283,6 @@ class Decoder:
             Génération de la clé d'ordre
 
             Args:
-                mdp (str): la clé de chiffrement entrer par l'utiisateur
 
             """
         od = ""
@@ -295,7 +296,7 @@ class Decoder:
         Génération de la clé utiliser pour AES
 
         Args:
-            password (str): la clé de chiffrement entrer par l'utiisateur
+
             salt= (byte): la sel de généraisation
 
         """
@@ -314,7 +315,6 @@ class Decoder:
         Génération de la clé utiliser pour TripleDES
 
         Args:
-            password (str): la clé de chiffrement entrer par l'utiisateur
             salt= (byte): la sel de généraisation
 
         """
@@ -334,8 +334,7 @@ class Decoder:
         la fonction de dechiffrement par AES
 
         Args:
-            key (byte): la clé de chiffrement AES
-            plaintext (str): mot à decrypter
+            mot (str): mot à decrypter
 
         """
         ciphertext = b64decode(mot.encode())
@@ -352,8 +351,6 @@ class Decoder:
         """
         s'occupe de bien gérer la génération des clés de chiffrement et d'appeler les fonctions de dechiffrement
         Args:
-            mot (str):mot à decrypter
-            cle="fdgs" (str): la clé de chiffrement
         """
         try:
             mot = self.mot

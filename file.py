@@ -3,7 +3,8 @@ import decode
 import json
 from tabulate import tabulate
 
-class File():
+
+class File:
     """ Cette Classe s'occupe du fichier json et de gérer les mots de passes 
     qui y sont sauvegardés à l'aide des modules suivants:
     
@@ -120,12 +121,26 @@ class File():
         with open(self.fichier, "r+") as f:
             dico = json.load(f)
             lignes = dico["data"]
-            enc = encode.encoder(mdp, self.key)
+            enc = encode.Encoder(mdp, self.key)
             lignes[int(index)]["Mot de passe"] = enc.crypt()
                                     
         with open(self.fichier, "w+") as f:
             json.dump({"data": lignes}, f)
 
+    def d_del(self, index:str):
+        """
+            fonction pour supprimer une donnée d'un fichier
+        """
+        with open(self.fichier, "r+") as f:
+            dico = json.load(f)
+            lignes = dico["data"]
+            lignes.remove(lignes[int(index)])
+        with open(self.fichier, "w+") as f:
+            json.dump({"data": lignes}, f)
+
+
+
 if __name__ == "__main__":
     fic =File("save.json","passck")
+    fic.d_del(0)
     print(fic.f_compt())
