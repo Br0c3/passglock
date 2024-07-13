@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}
+    home
+{% endblock title %}
+
+{% block content %}
+<div>
+    <h3>Utilisation basique</h3>
+    <ul class="list-group">
+        <li class="list-group-item active" aria-disabled="true"><a href={% url "genpass" %}>Generer le mot de passe</a></li>
+        <li class="list-group-item"><a href={% url "encod" %}>Chifrer un mot de passe</a></li>
+        <li class="list-group-item"><a href={% url "decod" %}>Dechifrer un mot de passe </a></li>
+      </ul>
+</div>
+<div>
+    <h3>Utilisation avancée</h3>
+    <ul class="list-group">
+        <li class="list-group-item active" aria-disabled="true"><a href={% url "openfil" %}>Ouvrir un nouveau coffre fort </a></li>
+        <li class="list-group-item"><a href={% url "managefil" %}>Ouvrir un coffre fort exitant</a></li>
+      </ul>
+</div>
+{% endblock content %}

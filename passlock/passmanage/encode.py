@@ -15,8 +15,8 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 #from cryptography.hazmat.primitives.kdf.pbkdf2 import CryptographyUnsupportedError
 
 class Encoder():
-    """ Cette classe crée des objets encoder qui s'occupent d'encoder la chaine de caractères 
-    à l'aide des modues suivants:
+    """ Cette classe crée des objets "Encoder" qui s'occupent d'encoder la chaine de caractères
+    à l'aide des modules suivants:
 
     cesar:    un chiffrement de césar
     vignere:  un chiffrement de vigénère

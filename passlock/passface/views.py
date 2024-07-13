@@ -4,16 +4,18 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse("index")
+
+    return render(request, 'index.html')
 
 def genpass(request):
+
     return HttpResponse("génératin de mot de pass")
 
 def encod(request):
     return HttpResponse("encode")
 
 def decod(request):
-    return HttpResponse("encode")
+    return HttpResponse("decode")
 
 def openfil(request):
     return HttpResponse("ouvrir")

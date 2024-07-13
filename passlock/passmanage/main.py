@@ -92,7 +92,7 @@ def init():
     # initialliser le fichier
     fichier = fic.f_init()
     # lancer menu secondaire
-    scd(fichier)
+    scd(fic)
 
 
 # ----------fonction d'ouverture d'un ancien fichier-----------
@@ -114,7 +114,7 @@ def save():
     except FileNotFoundError:  # intercepter une erreur si le fichier n'existe pas
         print('\033[31m' + "Le fichier que vous avez choisi n'existe pas /!\\" + '\033[0m')
     # lancer menu secondaire
-    scd(fichier)
+    scd(fic)
 
 
 # ----------fonction d'ajout de données a un objet File----------
