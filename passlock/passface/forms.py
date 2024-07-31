@@ -1,15 +1,15 @@
 from django import forms 
 
 class GenForm(forms.Form):
-    taille = forms.IntegerField(25,6,True)
-    caractere_ascii = forms.CheckboxInput()
-    chiffre = forms.CheckboxInput()
-    caractere_speciaux = forms.CheckboxInput()
+    taille = forms.IntegerField()
+    caractere_ascii = forms.BooleanField(required= False)
+    chiffre = forms.BooleanField(required= False, initial='off')
+    caractere_speciaux = forms.BooleanField(required= False, initial='off')
 
 
 class EncForm(forms.Form):
-    chaine = forms.CharField(300)
-    clef = forms.PasswordInput()
+    chaine = forms.CharField()
+    clef = forms.CharField(widget=forms.PasswordInput)
 
 
 class openForm(forms.Form):
@@ -18,8 +18,8 @@ class openForm(forms.Form):
 
 
 class AddForm(forms.Form):
-    nom_du_site = forms.CharField(300)
-    identifiant = forms.CharField(50)
+    nom_du_site = forms.CharField()
+    identifiant = forms.CharField()
     clef = forms.PasswordInput()
 
 

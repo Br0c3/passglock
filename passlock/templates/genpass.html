@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Génération de mot de passe</h1>
+    
+    <form action='{% url "genpass" %}', method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            envoyer
+        </button>
+        
+    </form>
+   
+    
+    <input name="passwd" id="passwd" value="{{pass}}" disabled >
+    
+    
+
+    
+
+{% endblock content %}

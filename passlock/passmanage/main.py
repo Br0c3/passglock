@@ -3,13 +3,43 @@ import re
 import string
 from getpass import getpass
 
-import decode
-import encode
-import file
-from file import File
+from passmanage import decode
+from passmanage import encode
+from passmanage import file
+from .file import File
 
 Fic = re.compile("^[a-zA-Z0-9_\-]+\.json+$")  # regex décrivant le format du fichier
 
+def genere(len,ascii,symb,num):
+    len = int(len)
+    carl = {"a": string.ascii_letters, "b": string.digits, "c": string.punctuation}
+    car =''
+    if ascii == 'on':
+        car += 'a'
+
+    if symb == 'on':
+        car += 'c'
+
+    if num == 'on':
+        car += 'b'        
+
+    cara = ""
+    for i in car:
+        # pour concatener proprement les chaines de caractère dans cara
+        # on vérifie si chaque caractère est une clé du dict carl(a,b,c)
+        try:
+            cara += carl[i]
+        except:
+            print("\033[31m" + "votre choix doit seulement comporter les lettres a b et c" + "\033[0m")
+            # rappeler la fonction si l'erreur est relever
+                
+    password = ""
+    print(car)
+    # boucle de generation en sélectionnant les caractères au hasard dans le str cara
+    for i in range(len):
+        password += random.choice(cara)
+    # retourner la chaine de caractère générée
+    return password            
 
 # ---------fonction de generation de mot de passe---------
 def genpwd():

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>chiffrement d'un mot de passe</h1>
+
+    <form action="{% url "encod" %}" method="post">
+        {% csrf_token %}
+
+        {{form.as_p}}
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            envoyer
+        </button>
+    </form>
+    <input type="text" name="result" id="result" value="{{result}}" disabled>
+{% endblock content %}
+
