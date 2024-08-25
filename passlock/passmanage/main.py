@@ -34,7 +34,6 @@ def genere(len,ascii,symb,num):
             # rappeler la fonction si l'erreur est relever
                 
     password = ""
-    print(car)
     # boucle de generation en sélectionnant les caractères au hasard dans le str cara
     for i in range(len):
         password += random.choice(cara)

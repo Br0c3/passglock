@@ -12,17 +12,25 @@ class EncForm(forms.Form):
     clef = forms.CharField(widget=forms.PasswordInput)
 
 
-class openForm(forms.Form):
-    coffre = forms.FileField()
-    clef = forms.PasswordInput()
+class OpenewForm(forms.Form):
+    nom_du_coffre = forms.CharField(max_length=26)
+    clef = forms.CharField(widget=forms.PasswordInput)
 
+class OpenoldForm(forms.Form):
+    emplacement_du_coffre = forms.FileField()
+    clef = forms.CharField(widget=forms.PasswordInput)
 
 class AddForm(forms.Form):
     nom_du_site = forms.CharField()
     identifiant = forms.CharField()
-    clef = forms.PasswordInput()
+    clef = forms.CharField(widget=forms.PasswordInput)
 
 
 class ModForm(forms.Form):
     index = forms.PasswordInput()
-    clef = forms.PasswordInput()
+    clef = forms.CharField(widget=forms.PasswordInput)
+    
+
+class DelForm(forms.Form):
+    index = forms.PasswordInput()
+     

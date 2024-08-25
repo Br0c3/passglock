@@ -34,7 +34,6 @@ def genpass(request):
             except:
                 num = None        
             passw = passmanage.main.genere(request.POST['taille'], ascii, symb, num)
-            print(passw)
     else:
         form = GenForm()
         passw = ""
@@ -73,8 +72,13 @@ def decod(request):
         result = ''
     context= {'form' : form, 'result': result}        
     return render(request, 'decod.html', context)
+
 def openfil(request):
-    return HttpResponse("ouvrir")
+    if request.method == 'POST':
+        form = OpenewForm(request.POST)
+    else:
+        form = OpenewForm()
+    return render(request, 'openfil.html',                                                                                                                                                                                                                                                {'form': form})
 
 def managefil(request):
     return HttpResponse("gérer")
