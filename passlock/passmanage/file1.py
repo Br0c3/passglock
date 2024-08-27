@@ -1,6 +1,7 @@
 from passmanage import encode
 from passmanage import decode
 import json
+from io import StringIO
 from tabulate import tabulate
 
 
@@ -21,13 +22,14 @@ class File:
         le constructeur de notre classe
 
         Args:
-            fichier (str): le chemin du fichier
+            fichier (StringIO): le chemin du fichier
             key (str): la clé de chiffrement du fichier
 
         """
        
         self.fichier = fichier
         self.key = key
+        self.fson = StringIO()
 
     def json2list(self, dictJsn):
         """
@@ -49,10 +51,9 @@ class File:
         affichage des données contenues dans le fichier
 
         """
-        dico = json.load(self.fichier)
+        dico = json.load(self.fson)
         f_reader = self.json2list(dico)
-
-        return f_reader
+        
         c= 0
         tem=[]
         for ligne in f_reader:
@@ -62,6 +63,8 @@ class File:
             
             tem.append(ligne)
             c+=1
+            
+        return tem    
         print(tabulate(tem, tablefmt="rounded_grid", maxcolwidths=[None,None,15, 20], stralign="center"))
 
     def f_compt(self):
@@ -80,18 +83,19 @@ class File:
 
         """
         # initier un nuveau fichier json 
-        with open(self.fichier, "w") as f:
-            json.dump({"data":[]}, f)
+        json.dump({"data":[]}, self.fson)
+
         print("\033[32m"+"fichier créer avec succès"+" \033[0m")
-        return self.fichier
+        #return self.fichier
 
     def f_open(self):
         """
         fonction pour ouvrir un fichier exixtant
         """
         # ouvrir un fichier json
-        self.f_list()
-        return self.fichier
+        json.dump(self.fichier, self.fson)
+
+        return self.fson
 
     def f_add(self, data:list):
         """
@@ -107,37 +111,46 @@ class File:
         for i in range(len(data)):
             dat[cles[i]] = data[i]
         
-        with open(self.fichier, "r+") as f:
-            dico = json.load(f)
-            dico["data"].append(dat)
-        with open(self.fichier, "w+") as f:
-            json.dump(dico, f)
-        self.f_list()
+        dico = json.load(self.fson)
+        dico["data"].append(dat)
 
+        # vider le stringio
+        self.fson.seek(0)
+        self.fson.truncate()
+
+        # enregistrer les nouvelles data
+        json.dump(dico, self.fson)
+        
     def f_mod(self, index:str, mdp:str):
         """
         fonction pour modifier les données d'un fichier
         """
-        with open(self.fichier, "r+") as f:
-            dico = json.load(f)
-            lignes = dico["data"]
-            enc = encode.Encoder(mdp, self.key)
-            lignes[int(index)]["Mot de passe"] = enc.crypt()
-                                    
-        with open(self.fichier, "w+") as f:
-            json.dump({"data": lignes}, f)
+
+        dico = json.load(self.fson)
+        lignes = dico["data"]
+        enc = encode.Encoder(mdp, self.key)
+        lignes[int(index)]["Mot de passe"] = enc.crypt()
+
+        # vider le stringio
+        self.fson.seek(0)
+        self.fson.truncate()
+
+        json.dump({"data": lignes}, self.fson)
 
     def d_del(self, index:str):
         """
             fonction pour supprimer une donnée d'un fichier
         """
-        with open(self.fichier, "r+") as f:
-            dico = json.load(f)
-            lignes = dico["data"]
-            lignes.remove(lignes[int(index)])
-        with open(self.fichier, "w+") as f:
-            json.dump({"data": lignes}, f)
 
+        dico = json.load(self.fson)
+        lignes = dico["data"]
+        lignes.remove(lignes[int(index)])
+
+        # vider le stringio
+        self.fson.seek(0)
+        self.fson.truncate()
+
+        json.dump({"data": lignes}, self.fson)
 
 
 if __name__ == "__main__":
