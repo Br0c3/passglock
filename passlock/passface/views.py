@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 import passmanage.encode
 import passmanage.main
 from .forms import *
+from passmanage.file1 import File
 import passmanage
 
 
@@ -76,12 +77,17 @@ def decod(request):
 def openfil(request):
     if request.method == 'POST':
         form = OpenewForm(request.POST)
+        if form.is_valid():
+            fname = request.POST['nom_du_coffre']
+            finstce = File('', request.POST["clef"])
+            request.session["file"] = finstce
+            return redirect("managefil")
     else:
         form = OpenewForm()
-    return render(request, 'openfil.html',                                                                                                                                                                                                                                                {'form': form})
+    return render(request, 'openfil.html',{'form': form})
 
 def managefil(request):
-    return HttpResponse("gérer")
+    return HttpResponse(request.session["file"].key)
 
 def addata(request):
     return HttpResponse("ajout")

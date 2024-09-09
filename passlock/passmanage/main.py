@@ -3,10 +3,10 @@ import re
 import string
 from getpass import getpass
 
-import decode
-import encode
-import file
-from file import File
+from passmanage import decode
+from passmanage import encode
+from passmanage import file
+#from passmanage.file import File
 
 Fic = re.compile("^[a-zA-Z0-9_\-]+\.json+$")  # regex décrivant le format du fichier
 
