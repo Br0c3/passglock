@@ -10,7 +10,11 @@ urlpatterns = [
     path('encod', views.encod, name="encod"),
     path('decod', views.decod, name="decod"),
     path('openfil', views.openfil, name="openfil"),
+    path('openoldfil', views.openoldfil, name = 'openoldfil'),
     path('managefil', views.managefil, name="managefil"),
     path('addata', views.addata, name="addata"),
-    path('editdata', views.editdata, name="editdata")
+    path('editdata', views.editdata, name="editdata"),
+    path('download', views.download, name="download"),
+    path('exited', views.exited, name="exited"),
+    path('deldata', views.deldata, name="deldata")
 ]

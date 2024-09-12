@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+import jsonpickle , json
 
 import passmanage.encode
 import passmanage.main
@@ -79,18 +80,42 @@ def openfil(request):
         form = OpenewForm(request.POST)
         if form.is_valid():
             fname = request.POST['nom_du_coffre']
-            finstce = File('', request.POST["clef"])
-            request.session["file"] = finstce
+            finstce = File( request.POST["clef"])
+            finstce.f_init()
+            request.session["file"] = jsonpickle.encode(finstce)
             return redirect("managefil")
     else:
         form = OpenewForm()
     return render(request, 'openfil.html',{'form': form})
 
+def openoldfil(request):
+    if request.method == 'POST':
+        form = OpenoldForm(request.POST, request.FILES)
+        if form.is_valid():
+            fname = request.POST['nom_du_coffre']
+            finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
+            finstce.f_open()
+            request.session["file"] = jsonpickle.encode(finstce)
+            return redirect("managefil")
+    else:
+        form = OpenoldForm()
+    return render(request, 'openfil.html',{'form': form})
+
 def managefil(request):
-    return HttpResponse(request.session["file"].key)
+    flist = jsonpickle.decode(request.session["file"]).f_list()
+    return render(request, 'managefil.html', {'flist': flist})
 
 def addata(request):
     return HttpResponse("ajout")
 
 def editdata(request):
     return HttpResponse("modif")
+
+def deldata(request):
+    return HttpResponse("supprimer")
+
+def download(request):
+    return HttpResponse("telecharge")
+
+def exited(request):
+    return HttpResponse("quitter")

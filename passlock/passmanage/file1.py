@@ -1,6 +1,6 @@
 from passmanage import encode
 from passmanage import decode
-import json
+import json, jsonpickle
 from io import StringIO
 from tabulate import tabulate
 
@@ -17,12 +17,12 @@ class File:
     f_mod: modifi un mot de passe dans le fichier
       """
     
-    def __init__(self, fichier, key:str) -> None:
+    def __init__(self, key:str, fichier = StringIO()) -> None:
         """
         le constructeur de notre classe
 
         Args:
-            fichier (StringIO): le chemin du fichier
+            fichier (file): le contenu du fichier
             key (str): la clé de chiffrement du fichier
 
         """
@@ -51,6 +51,7 @@ class File:
         affichage des données contenues dans le fichier
 
         """
+        self.fson.seek(0)
         dico = json.load(self.fson)
         f_reader = self.json2list(dico)
         
@@ -85,6 +86,7 @@ class File:
         # initier un nuveau fichier json 
         json.dump({"data":[]}, self.fson)
 
+
         print("\033[32m"+"fichier créer avec succès"+" \033[0m")
         #return self.fichier
 
@@ -93,7 +95,7 @@ class File:
         fonction pour ouvrir un fichier exixtant
         """
         # ouvrir un fichier json
-        json.dump(self.fichier, self.fson)
+        json.dump(self.fichier.read(), self.fson)
 
         return self.fson
 

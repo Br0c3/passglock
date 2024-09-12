@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Gestion de coffre </h1>
+<div>
+    <div
+        class="table-responsive"
+    >
+        <table
+            class="table table-primary"
+        >
+        <thead>
+            <tr>
+                {% for header in flist.0 %}
+                    <th>{{header}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        
+            <tbody>
+                <tr class="">
+                    {% for list in flist|slice:'1:' %}
+                        {% for elem in list %}
+                            <td>{{elem}}</td>
+                        {% endfor %}
+                        <td>
+                            <a href={% url 'editdata' list.0 %}>modifier</a>
+                            <a href= {% url 'deldata' list.0 %}>supprimer</a>
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Hover added -->
+    <div class="list-group">
+        <a href={% url 'addata' %} class="list-group-item list-group-item-action"
+            > Ajouter des données</a
+        >
+        <a href={% url "download" %} class="list-group-item list-group-item-action"
+            >Télécharger le coffre</a
+        >
+        <a href={% url "exited" %} class="list-group-item list-group-item-action"
+            >Quiter</a
+        >
+    </div>
+    
+</div>
+{% endblock content %}

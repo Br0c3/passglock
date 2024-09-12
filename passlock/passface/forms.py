@@ -17,6 +17,7 @@ class OpenewForm(forms.Form):
     clef = forms.CharField(widget=forms.PasswordInput)
 
 class OpenoldForm(forms.Form):
+    nom_du_coffre = forms.CharField(max_length=26)
     emplacement_du_coffre = forms.FileField()
     clef = forms.CharField(widget=forms.PasswordInput)
 
