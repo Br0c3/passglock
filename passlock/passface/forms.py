@@ -24,7 +24,7 @@ class OpenoldForm(forms.Form):
 class AddForm(forms.Form):
     nom_du_site = forms.CharField()
     identifiant = forms.CharField()
-    clef = forms.CharField(widget=forms.PasswordInput)
+    mot_de_passe = forms.CharField(widget=forms.PasswordInput)
 
 
 class ModForm(forms.Form):

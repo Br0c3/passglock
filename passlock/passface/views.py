@@ -83,6 +83,7 @@ def openfil(request):
             finstce = File( request.POST["clef"])
             finstce.f_init()
             request.session["file"] = jsonpickle.encode(finstce)
+            request.session["name"] = fname
             return redirect("managefil")
     else:
         form = OpenewForm()
@@ -96,6 +97,7 @@ def openoldfil(request):
             finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
             finstce.f_open()
             request.session["file"] = jsonpickle.encode(finstce)
+            request.session["name"] = fname
             return redirect("managefil")
     else:
         form = OpenoldForm()
@@ -103,13 +105,29 @@ def openoldfil(request):
 
 def managefil(request):
     flist = jsonpickle.decode(request.session["file"]).f_list()
-    return render(request, 'managefil.html', {'flist': flist})
+    name = request.session["name"]
+    return render(request, 'managefil.html', {'flist': flist, "name" : name})
 
 def addata(request):
-    return HttpResponse("ajout")
+    if request.method == 'POST':
+        form = AddForm(request.POST)
+        if form.is_valid():
+            fname = request.POST['nom_du_site']
+            idnt = request.POST["identifiant"]
+            key = request.POST["mot_de_passe"]
+            
+            finstce = jsonpickle.decode(request.session["file"])
+            indx = finstce.f_compt()
+            print(indx)
+            finstce.f_add([indx, fname,idnt, key])
+            request.session["file"] = jsonpickle.encode(finstce)
+            return redirect("managefil")
+    else:
+        form = AddForm()
+    return render(request, 'addata.html',{'form': form})
 
 def editdata(request):
-    return HttpResponse("modif")
+    return HttpResponse("modif"+request.GET["indx"])
 
 def deldata(request):
     return HttpResponse("supprimer")

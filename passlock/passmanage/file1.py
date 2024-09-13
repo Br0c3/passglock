@@ -55,6 +55,7 @@ class File:
         dico = json.load(self.fson)
         f_reader = self.json2list(dico)
         
+        
         c= 0
         tem=[]
         for ligne in f_reader:
@@ -73,9 +74,9 @@ class File:
         fonction pour compter le nombre d'index dans le fichier
 
         """
+        self.fson.seek(0)
         
-        
-        dico = json.load(self.fichier)
+        dico = json.load(self.fson)
         return len(dico["data"])
 
     def f_init(self):
@@ -103,6 +104,8 @@ class File:
         """
         fonction pour ajouter des données au fichier
         """
+        enc = encode.Encoder(data[3], self.key)
+        data[3] = enc.crypt()
         dat ={}
         cles = [
             "Index" ,
@@ -112,6 +115,8 @@ class File:
             ]
         for i in range(len(data)):
             dat[cles[i]] = data[i]
+
+        self.fson.seek(0)    
         
         dico = json.load(self.fson)
         dico["data"].append(dat)
