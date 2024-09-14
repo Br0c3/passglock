@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-
+{% block title %}
+  CHIFFEMENT
+{% endblock title %}
 {% block content %}
-    <h1>chiffrement d'un mot de passe</h1>
+    <h1>Chiffrement d'un mot de passe</h1>
 
     <form action="{% url "encod" %}" method="post">
         {% csrf_token %}

@@ -39,7 +39,7 @@ class File:
             dictJsn (dict): le dictionnaire à convertir
 
         """
-    
+        
         liste = dictJsn["data"]
         liste = [list(liste[i].values()) for i in range(len(liste))]
         liste.insert(0, ["Index" , "Nom du site", "Identifiant (pseudo, e-mail ou numéro)", "Mot de passe"])
@@ -77,7 +77,13 @@ class File:
         self.fson.seek(0)
         
         dico = json.load(self.fson)
-        return len(dico["data"])
+        cnt = len(dico["data"])
+        #print(dico['data'][0]['Index'])
+        if cnt == 0:
+            pass
+        else:
+            cnt = int(dico['data'][-1]['Index'])+1
+        return str(cnt)
 
     def f_init(self):
         """
@@ -95,8 +101,10 @@ class File:
         """
         fonction pour ouvrir un fichier exixtant
         """
+        dico = json.loads(self.fichier.read().decode())
+        self.fson.seek(0)
         # ouvrir un fichier json
-        json.dump(self.fichier.read(), self.fson)
+        json.dump(dico , self.fson)
 
         return self.fson
 
@@ -132,11 +140,16 @@ class File:
         """
         fonction pour modifier les données d'un fichier
         """
+        self.fson.seek(0)
 
         dico = json.load(self.fson)
         lignes = dico["data"]
+        indx = ''
+        for i in lignes:
+            if i['Index']== index:
+                indx = lignes.index(i)
         enc = encode.Encoder(mdp, self.key)
-        lignes[int(index)]["Mot de passe"] = enc.crypt()
+        lignes[indx]["Mot de passe"] = enc.crypt()
 
         # vider le stringio
         self.fson.seek(0)
@@ -144,14 +157,22 @@ class File:
 
         json.dump({"data": lignes}, self.fson)
 
-    def d_del(self, index:str):
+    def f_del(self, index:str):
         """
             fonction pour supprimer une donnée d'un fichier
         """
+        self.fson.seek(0)
+
 
         dico = json.load(self.fson)
         lignes = dico["data"]
-        lignes.remove(lignes[int(index)])
+        print(lignes)
+        indx = ''
+        for i in lignes:#cette boucle sert a trouver l'index de l'index
+            if i['Index']== index:
+                indx = lignes.index(i)
+        lignes.remove(lignes[indx])
+        print(lignes)
 
         # vider le stringio
         self.fson.seek(0)

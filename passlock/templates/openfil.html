@@ -1,13 +1,9 @@
 {% extends "base.html" %}
-{% load static %}
+{% block title %}
+  CRÉATION
+{% endblock title %}
 {% block content %}
-    <nav
-        class="nav justify-content-center"
-    >
-        <a class="nav-link active" href="{% static 'media/save.json' %}" aria-current="page" >{{MEDIA_URL}}</a>
-        <a class="nav-link" href="{{MEDIA_URL}}">Link</a>
-        <a class="nav-link disabled" href="#">Disabled link</a>
-    </nav>
+    <h1>Création d'un nouveau coffre</h1>
     <form action="{% url "openfil" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -20,5 +16,5 @@
             envoyer
         </button>
     </form>
-    {{MEDIA_URL}}
+    
 {% endblock content %}

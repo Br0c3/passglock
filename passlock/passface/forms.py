@@ -28,10 +28,5 @@ class AddForm(forms.Form):
 
 
 class ModForm(forms.Form):
-    index = forms.PasswordInput()
-    clef = forms.CharField(widget=forms.PasswordInput)
+    nouveau_mot_de_passe = forms.CharField(widget=forms.PasswordInput)
     
-
-class DelForm(forms.Form):
-    index = forms.PasswordInput()
-     

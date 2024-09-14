@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-
+{% block title %}
+  DÉCHIFFREMENT
+{% endblock title %}
 {% block content %}
-    <h1>chiffrement d'un mot de passe</h1>
+    <h1>Déchiffrement d'un mot de passe</h1>
 
     <form action="{% url "decod" %}" method="post">
         {% csrf_token %}

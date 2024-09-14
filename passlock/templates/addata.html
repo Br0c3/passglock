@@ -1,13 +1,9 @@
 {% extends "base.html" %}
-{% load static %}
+{% block title %}
+  AJOUT
+{% endblock title %}
 {% block content %}
-    <nav
-        class="nav justify-content-center"
-    >
-        <a class="nav-link active" href="{% static 'media/save.json' %}" aria-current="page" >{{MEDIA_URL}}</a>
-        <a class="nav-link" href="{{MEDIA_URL}}">Link</a>
-        <a class="nav-link disabled" href="#">Disabled link</a>
-    </nav>
+    <h1>Ajout de donnée</h1>
     <form action="{% url "addata" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -20,5 +16,4 @@
             envoyer
         </button>
     </form>
-    {{MEDIA_URL}}
 {% endblock content %}

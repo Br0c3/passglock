@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import jsonpickle , json
+from django.contrib.auth import logout
 
 import passmanage.encode
 import passmanage.main
@@ -101,11 +102,14 @@ def openoldfil(request):
             return redirect("managefil")
     else:
         form = OpenoldForm()
-    return render(request, 'openfil.html',{'form': form})
+    return render(request, 'openoldfil.html',{'form': form})
 
 def managefil(request):
-    flist = jsonpickle.decode(request.session["file"]).f_list()
-    name = request.session["name"]
+    try:
+        flist = jsonpickle.decode(request.session["file"]).f_list()
+        name = request.session["name"]
+    except(KeyError):
+        return redirect("index")
     return render(request, 'managefil.html', {'flist': flist, "name" : name})
 
 def addata(request):
@@ -115,8 +119,11 @@ def addata(request):
             fname = request.POST['nom_du_site']
             idnt = request.POST["identifiant"]
             key = request.POST["mot_de_passe"]
-            
-            finstce = jsonpickle.decode(request.session["file"])
+            try:
+                finstce = jsonpickle.decode(request.session["file"])
+            except(KeyError):
+                return redirect("index")
+        
             indx = finstce.f_compt()
             print(indx)
             finstce.f_add([indx, fname,idnt, key])
@@ -127,13 +134,48 @@ def addata(request):
     return render(request, 'addata.html',{'form': form})
 
 def editdata(request):
-    return HttpResponse("modif"+request.GET["indx"])
+    if request.method == 'POST':
+        form = ModForm(request.POST)
+        if form.is_valid():
+            key = request.POST["nouveau_mot_de_passe"]
+            indx = request.POST["index"]
+            try:
+                finstce = jsonpickle.decode(request.session["file"])
+            except(KeyError):
+                return redirect("index")    
+            
+            finstce.f_mod(indx, key)
+
+            request.session["file"] = jsonpickle.encode(finstce)
+            return redirect("managefil")
+    else:
+        indx = request.GET["indx"]
+        form = ModForm()
+    return render(request, 'editdata.html',{'form': form, 'indx': indx})
 
 def deldata(request):
-    return HttpResponse("supprimer")
+    if request.method == "GET":
+        try:
+            finstce = jsonpickle.decode(request.session["file"])
+        except(KeyError):
+            return redirect("index")    
+        indx = request.GET["indx"]
+        finstce.f_del(indx)
+        request.session["file"] = jsonpickle.encode(finstce)
+    return redirect("managefil")
 
 def download(request):
+    try:
+        fichier = jsonpickle.decode(request.session["file"]).fson.getvalue()
+    except(KeyError):
+        return redirect("index")    
+    fName = request.session['name']
+    mine_type = "application/json" #determiner le type de fichier a envoyer dans la reponce
+    response = HttpResponse(fichier, content_type=mine_type) # construire la reponce http
+    response['Content-Disposition'] = "attachement; filename= " + fName + ".json" #customiser la reponce http en ajoutant le nom du fichier 
+    return response
     return HttpResponse("telecharge")
 
 def exited(request):
-    return HttpResponse("quitter")
+    logout(request)
+    return redirect(index)
