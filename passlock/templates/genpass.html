@@ -3,9 +3,9 @@
   GÉNÉRATION
 {% endblock title %}
 {% block content %}
-    <h1>Génération de mot de passe</h1>
+    <h1 class="py-3">Génération de mot de passe</h1>
     
-    <form action='{% url "genpass" %}', method="post">
+    <form action='{% url "genpass" %}', method="post" class="">
         {% csrf_token %}
         {{form.as_p}}
         <button

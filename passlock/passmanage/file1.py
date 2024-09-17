@@ -1,6 +1,6 @@
 from passmanage import encode
 from passmanage import decode
-import json, jsonpickle
+import json
 from io import StringIO
 from tabulate import tabulate
 

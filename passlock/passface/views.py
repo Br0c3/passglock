@@ -10,10 +10,12 @@ from passmanage.file1 import File
 import passmanage
 
 
-# Create your views here.
 def index(request):
-
-    return render(request, 'index.html')
+    try:
+        sessio = request.session["name"] 
+    except(KeyError):
+        sessio = "none"  
+    return render(request, 'index.html', {"session" : sessio})
 
 def genpass(request):
     if request.method == 'POST':

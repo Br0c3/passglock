@@ -119,9 +119,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = BASE_DIR / 'static/'
 STATICFILES_DIRS = [
-    ('media' , BASE_DIR / 'media/')
+    ('static' , BASE_DIR / 'static/')
 ]
 # Media files (json)
 
