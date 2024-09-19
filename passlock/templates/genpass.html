@@ -8,17 +8,25 @@
     <form action='{% url "genpass" %}', method="post" class="">
         {% csrf_token %}
         {{form.as_p}}
+        <input type="hidden" name="opp" value="{{op}}">
+        <input type="hidden" name="indx" value="{{indx}}">
         <button
             type="submit"
             class="btn btn-primary"
         >
-            envoyer
+            Générer
+
         </button>
-        
+        <textarea type="text" name="passwd" id="passwd" value="{{pass}}" disabled>{{pass}} </textarea>{
+        {% if session != "none" %}
+            {% if op == 'addata' %}
+            <button><a href="{% url "addata" %}?val={{pass}}">Utiliser</a></button>
+            {% else %}
+            <button><a href="{% url "editdata" %}?val={{pass}}&indx={{indx}}">Utiliser</a></button>
+            {% endif %}
+        {% endif %}
     </form>
-   
     
-    <input name="passwd" id="passwd" value="{{pass}}" disabled >
     
     
 

@@ -39,10 +39,22 @@ def genpass(request):
             except:
                 num = None        
             passw = passmanage.main.genere(request.POST['taille'], ascii, symb, num)
+            opp = request.POST['opp']
+            indx = request.POST['indx']
+            print(indx)
     else:
         form = GenForm()
         passw = ""
-    context = {'form': form, 'pass': passw}        
+        try:
+            opp = request.GET['op']
+            if opp == 'addata':
+                indx=''
+            else:
+                indx = request.GET['indx']
+        except:
+            opp = 'l'
+            indx = '' 
+    context = {'form': form, 'pass': passw, 'op': opp, 'indx': indx}        
     return render(request, 'genpass.html', context)
 
 
@@ -131,9 +143,15 @@ def addata(request):
             finstce.f_add([indx, fname,idnt, key])
             request.session["file"] = jsonpickle.encode(finstce)
             return redirect("managefil")
-    else:
-        form = AddForm()
-    return render(request, 'addata.html',{'form': form})
+    else :
+        
+        try :
+            mdp = request.GET['val']
+            form = AdForm()
+        except:
+            form = AddForm()
+            mdp=''    
+        return render(request, 'addata.html',{'form': form, 'val': mdp})
 
 def editdata(request):
     if request.method == 'POST':
@@ -151,7 +169,21 @@ def editdata(request):
             request.session["file"] = jsonpickle.encode(finstce)
             return redirect("managefil")
     else:
-        indx = request.GET["indx"]
+        
+        try:
+            indx = request.GET["indx"]
+            key = request.GET['val']
+            try:
+                finstce = jsonpickle.decode(request.session["file"])
+            except(KeyError):
+                return redirect("index")    
+            
+            finstce.f_mod(indx, key)
+
+            request.session["file"] = jsonpickle.encode(finstce)
+            return redirect("managefil")
+        except:
+            pass
         form = ModForm()
     return render(request, 'editdata.html',{'form': form, 'indx': indx})
 

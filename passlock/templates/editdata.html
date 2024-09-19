@@ -9,13 +9,15 @@
 
         <input type="hidden" name="index" value={{indx}}>
         {{form.as_p}}
-
+        <a href="{% url 'genpass' %}?op=editdata&indx={{indx}}"> Générer un mot de passe</a>
+        <br>
         <button
             type="submit"
             class="btn btn-primary"
         >
-            envoyer
+            Modifier
         </button>
+
     </form>
     
 {% endblock content %}

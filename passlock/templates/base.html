@@ -11,17 +11,17 @@
         {% endblock title %}
     </title>
 </head>
-<body class=' bg-secondary bg-gradient'>
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href={% url "index" %}>
-                <img src={% static "img.jpg" %} alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                Passglock
+<body class=' ' style=" background-image : url( {% static 'img.jpg' %} )">
+    <nav class="navbar bg-body-tertiary py-0" style="background-color : #aec7e4" >
+        <div class="container-fluid " style="background-color : #aec7e4" >
+            <a class="navbar-brand align-text-center d-sm-flex" href={% url "index" %} >
+                <img src={% static "img.jpg" %} alt="Logo" width="50" height="50" class="rounded-circle d-inline-block ">
+                <span class="fs-2 align-text-center px-3">Passglock</span>
             </a>
         </div>
     </nav>
     <div
-        class="container-sm text-center"
+        class="container-sm text-center h-100"
     >
         {% block content %}
             

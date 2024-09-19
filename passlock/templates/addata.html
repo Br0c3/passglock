@@ -8,12 +8,16 @@
         {% csrf_token %}
 
         {{form.as_p}}
-
+        {% if val %}
+          <input type="hidden" name="mot_de_passe", value="{{val}}">
+        {% endif %}
+        <a href="{% url 'genpass' %}?op=addata"> Générer un mot de passe</a>
+        <br>
         <button
             type="submit"
             class="btn btn-primary"
         >
-            envoyer
+            Ajouter
         </button>
     </form>
 {% endblock content %}
