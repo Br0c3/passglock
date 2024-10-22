@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!../.venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import codecs
 import sys,os

@@ -10,14 +10,14 @@ from passmanage.file1 import File
 import passmanage
 
 
-def index(request):
+def genpass(request):
     try:
         sessio = request.session["name"] 
     except(KeyError):
         sessio = "none"  
     return render(request, 'index.html', {"session" : sessio})
 
-def genpass(request):
+def index(request):
     if request.method == 'POST':
         form = GenForm(request.POST)
         if form.is_valid():
@@ -54,8 +54,13 @@ def genpass(request):
         except:
             opp = 'l'
             indx = '' 
-    context = {'form': form, 'pass': passw, 'op': opp, 'indx': indx}        
-    return render(request, 'genpass.html', context)
+    try:
+        sessio = request.session["name"]
+        print('ldhwvuoevweh')
+    except(KeyError):
+        sessio = "none"  
+    context = {'form': form, 'pass': passw, 'op': opp, 'indx': indx, 'session':sessio}        
+    return render(request, 'index.html', context)
 
 
 def encod(request):
