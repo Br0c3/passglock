@@ -1,3 +1,4 @@
+#!../.venv/bin/python3.10
 import codecs
 # import sys,os
 from base64 import *

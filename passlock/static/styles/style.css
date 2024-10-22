@@ -1,0 +1,12 @@
+
+body{
+        background-color: rgb(127, 158, 215);
+}
+header{
+    background-color: rgba(101, 109, 123, 0.935);
+}
+
+#content{
+    background-color: rgba(101, 109, 123, 0.642);
+    height: 100%;
+}
