@@ -3,13 +3,36 @@
   GÉNÉRATION
 {% endblock title %}
 {% block content %}
-    <h1 class="py-3">Génération de mot de passe</h1>
+    <h1 class="p-3">Génération de mot de passe</h1>
     
-    <form action='{% url "genpass" %}', method="post" class="">
+    <form action='{% url "genpass" %}', method="post" class="flex flex-col justify-center items-center gap-3">
         {% csrf_token %}
-        {{form.as_p}}
+        <label class="input">
+        <span class="label">{{form.taille.label}}</span>
+        {{form.taille}}
+         
+        </label>
+        <div class="list gap-3">
+            <label class="label">
+                {{form.caractere_ascii}}
+                {{form.caractere_ascii.label}}
+            </label>
+
+            <label class="label">
+                {{form.chiffre}}
+                {{form.chiffre.label}}
+            </label>
+
+            <label class="label">
+                {{form.caractere_speciaux}}
+                {{form.caractere_speciaux.label}}
+            </label>
+        </div>
         <input type="hidden" name="opp" value="{{op}}">
         <input type="hidden" name="indx" value="{{indx}}">
+        
+        <div class="flex flex-row justify-center items-center gap-3">
+            
         <button
             type="submit"
             class="btn btn-primary"
@@ -17,14 +40,15 @@
             Générer
 
         </button> <br>
-        <textarea type="text" name="passwd" id="passwd" value="{{pass}}" disabled>{{pass}} </textarea>
+        
         {% if session != "none" %}
             {% if op == 'addata' %}
-            <button><a href="{% url "addata" %}?val={{pass}}">Utiliser</a></button>
+            <button class="btn btn-secondary"><a href="{% url "addata" %}?val={{pass | urlencode}}">Utiliser</a></button>
             {% elif op == 'editdata' %}
-            <button><a href="{% url "editdata" %}?val={{pass}}&indx={{indx}}">Utiliser</a></button>
+            <button class="btn btn-secondary"><a href="{% url "editdata" %}?val={{pass | urlencode}}&indx={{indx}}">Utiliser</a></button>
             {% endif %}
-        {% endif %}
+        {% endif %}</div>
+        <textarea type="text" name="passwd" id="passwd" value="{{pass}}" disabled>{{pass}} </textarea>
     </form>
     
     

@@ -3,21 +3,40 @@
   AJOUT
 {% endblock title %}
 {% block content %}
-    <h1>Ajout de donnée</h1>
-    <form action="{% url "addata" %}" method="post" enctype="multipart/form-data">
+    <h1 class="py-3 text-4xl">Ajout de donnée</h1>
+    <form action="{% url "addata" %}" method="post" enctype="multipart/form-data" class=" flex flex-col justify-center items-center gap-3">
         {% csrf_token %}
+        <label class="input">
+            <span class="label">{{form.nom_du_site.label}}</span>
+            {{form.nom_du_site}}
+        </label>
 
-        {{form.as_p}}
+        <label class="input">
+            <span class="label">{{form.identifiant.label}}</span>
+            {{form.identifiant}}
+        </label>
+
+       
+
+
         {% if val %}
           <input type="hidden" name="mot_de_passe", value="{{val}}">
+
+        {% else %}
+             <label class="input">
+                <span class="label">{{form.mot_de_passe.label}}</span>
+                {{form.mot_de_passe}}
+            </label>
         {% endif %}
-        <a href="{% url 'genpass' %}?op=addata"> Générer un mot de passe</a>
+
+        <div class="flex flex-row justify-center items-center gap-3">
+        <a href="{% url 'genpass' %}?op=addata" class="btn btn-secondary"> Générer un mot de passe</a>
         <br>
         <button
             type="submit"
             class="btn btn-primary"
         >
             Ajouter
-        </button>
+        </button></div>
     </form>
 {% endblock content %}

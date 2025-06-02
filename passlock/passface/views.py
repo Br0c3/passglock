@@ -11,11 +11,43 @@ import passmanage
 
 
 def genpass(request):
-    try:
-        sessio = request.session["name"] 
-    except(KeyError):
-        sessio = "none"  
-    return render(request, 'index.html', {"session" : sessio})
+    if request.method == 'POST':
+        form = GenForm(request.POST)
+        if form.is_valid():
+            try:
+                request.POST['caractere_ascii']
+                ascii = 'on'
+            except:
+                ascii = None
+
+            try:
+                request.POST['caractere_speciaux']
+                symb = 'on'
+            except:
+                symb = None
+
+            try:
+                request.POST['chiffre']
+                num = 'on'
+            except:
+                num = None        
+            passw = passmanage.main.genere(request.POST['taille'], ascii, symb, num)
+            opp = request.POST['opp']
+            indx = request.POST['indx']
+            print(indx)
+    else:
+        form = GenForm()
+        passw = ""
+        try:
+            opp = request.GET['op']
+            if opp == 'addata':
+                indx=''
+            else:
+                indx = request.GET['indx']
+        except:
+            opp = 'l'
+            indx = ''  
+    return render(request, 'genpass.html', {'form': form, 'pass': passw, 'op': opp, 'indx': indx})
 
 def index(request):
     if request.method == 'POST':

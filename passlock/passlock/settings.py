@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'passface',
+    'tailwind',
+    
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,6 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
+TAILWIND_APP_NAME = 'theme'

@@ -3,20 +3,24 @@
   MODIFICATION
 {% endblock title %}
 {% block content %}
-    <h1>Modification de données à l'index {{indx}}</h1>
-    <form action="{% url "editdata" %}" method="post" enctype="multipart/form-data">
+    <h1 class="py-3 text-2xl">Modification de données à l'index {{indx}}</h1>
+    <form action="{% url "editdata" %}" method="post" enctype="multipart/form-data" class=" flex flex-col justify-center items-center gap-3">
         {% csrf_token %}
 
         <input type="hidden" name="index" value={{indx}}>
-        {{form.as_p}}
-        <a href="{% url 'genpass' %}?op=editdata&indx={{indx}}"> Générer un mot de passe</a>
-        <br>
+        <label class="input">
+            <span class="label">{{form.nouveau_mot_de_passe.label}}</span>
+            {{form.nouveau_mot_de_passe}}
+        </label>
+        <div class="flex flex-row justify-center items-center gap-3">
+        <a href="{% url 'genpass' %}?op=editdata&indx={{indx}}" class="btn btn-secondary"> Générer un mot de passe</a>
+
         <button
             type="submit"
             class="btn btn-primary"
         >
             Modifier
-        </button>
+        </button></div>
 
     </form>
     

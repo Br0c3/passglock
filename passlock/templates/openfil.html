@@ -3,12 +3,20 @@
   CRÉATION
 {% endblock title %}
 {% block content %}
-    <h1>Création d'un nouveau coffre</h1>
-    <form action="{% url "openfil" %}" method="post" enctype="multipart/form-data">
+    <h1 class="py-3 text-4xl">Création d'un nouveau coffre</h1>
+    <form action="{% url "openfil" %}" method="post" enctype="multipart/form-data" class="flex flex-col justify-center items-center gap-3">
         {% csrf_token %}
 
-        {{form.as_p}}
+        <label class="input">
+            <span class="label">{{form.nom_du_coffre.label}}</span>
+            {{form.nom_du_coffre}}
+        </label>
 
+        <label class="input">
+            <span class="label m-0">Clé du coffre</span>
+            {{form.clef}}
+        </label>
+    
         <button
             type="submit"
             class="btn btn-primary"

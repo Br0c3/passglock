@@ -3,16 +3,16 @@
   GESTION
 {% endblock title %}
 {% block content %}
-<h1>Gestion du coffre  {{name}}</h1>
-<div>
+<h1 class="py-3 text-4xl">Gestion du coffre  {{name}}</h1>
+<div class="flex flex-col justify-center items-center ">
     <div
         class="table-responsive"
     >
         <table
-            class="table table-primary"
+            class="table table-zebra text-center table-lg w-full"
         >
-        <thead>
-            <tr>
+        <thead > 
+            <tr >
                 {% for header in flist.0 %}
                     <th>{{header}}</th>
                 {% endfor %}
@@ -20,19 +20,19 @@
             </tr>
         </thead>
         
-            <tbody>
+            <tbody >
                 
                 {% for list in flist|slice:'1:' %}
                 <tr class="">
                     {% for elem in list %}
                         <td>{{elem}}</td>
                     {% endfor %}
-                    <td>
-                        <a href="{% url 'editdata' %}?indx={{list.0}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <td class="flex flex-row ">
+                        <a href="{% url 'editdata' %}?indx={{list.0}}" class="mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                           </svg></a>
-                        <a href= "{% url 'deldata' %}?indx={{list.0}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <a href= "{% url 'deldata' %}?indx={{list.0}}" class="mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                             <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
                           </svg></a>
@@ -45,16 +45,27 @@
     </div>
 
     <!-- Hover added -->
-    <div class="list-group">
-        <a href={% url 'addata' %} class="list-group-item list-group-item-action"
-            > Ajouter des données</a
-        >
-        <a href={% url "download" %} class="list-group-item list-group-item-action"
-            >Télécharger le coffre</a
-        >
-        <a href={% url "exited" %} class="list-group-item list-group-item-action"
-            >Quiter</a
-        >
+    <div class="menu menu-horizontal bg-base-200 rounded-box mt-6 flex self-center gap-5">
+        <a href={% url 'addata' %} class="tooltip" 
+            ><svg xmlns="http://www.w3.org/2000/svg" class="size-7" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+</svg>
+
+           
+        </a>
+        <a href={% url "download" %} class="tooltip"
+            ><svg xmlns="http://www.w3.org/2000/svg" class="size-7" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+</svg>
+        </a>
+        <a href={% url "exited" %} class="tooltip" 
+            ><svg xmlns="http://www.w3.org/2000/svg" class="size-7" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+</svg>
+          
+        </a>
     </div>
     
 </div>

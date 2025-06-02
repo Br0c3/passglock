@@ -1,0 +1,28 @@
+{
+  "name": "passglock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:css": "tailwindcss -i ./passlock/static/css/src/input.css -o ./passlock/static/css/src/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Br0c3/passglock.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Br0c3/passglock/issues"
+  },
+  "homepage": "https://github.com/Br0c3/passglock#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.8",
+    "tailwindcss": "^4.1.8"
+  },
+  "devDependencies": {
+    "daisyui": "^5.0.42"
+  }
+}

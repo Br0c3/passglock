@@ -1,10 +1,10 @@
 from django import forms 
 
 class GenForm(forms.Form):
-    taille = forms.IntegerField()
-    caractere_ascii = forms.BooleanField(required= False)
-    chiffre = forms.BooleanField(required= False, initial='off')
-    caractere_speciaux = forms.BooleanField(required= False, initial='off')
+    taille = forms.IntegerField(widget=forms.NumberInput(attrs={ "min": 1, "max": 100}), initial=12)
+    caractere_ascii = forms.BooleanField(required= False, widget=forms.CheckboxInput(attrs={"class": "checkbox checkbox-primary"}))
+    chiffre = forms.BooleanField(required= False, initial='off', widget=forms.CheckboxInput(attrs={"class": "checkbox checkbox-primary"}))
+    caractere_speciaux = forms.BooleanField(required= False, initial='off', widget=forms.CheckboxInput(attrs={"class": "checkbox checkbox-primary"}))
 
 
 class EncForm(forms.Form):
@@ -18,7 +18,7 @@ class OpenewForm(forms.Form):
 
 class OpenoldForm(forms.Form):
     nom_du_coffre = forms.CharField(max_length=26)
-    emplacement_du_coffre = forms.FileField()
+    emplacement_du_coffre = forms.FileField(widget=forms.FileInput(attrs={'class': 'file-input'}))
     clef = forms.CharField(widget=forms.PasswordInput)
 
 class AddForm(forms.Form):

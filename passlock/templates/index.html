@@ -4,11 +4,32 @@
 {% endblock title %}
 
 {% block content %}
-<h1 class="py-3">Génération de mot de passe</h1>
-
-<form action='{% url "index" %}', method="post" class="">
+<form action='{% url "index" %}', method="post" class=" flex flex-col justify-center items-center gap-3">
+    <h3 class="py-3 text-4xl">Génération de mot de passe</h3>
     {% csrf_token %}
-    {{form.as_p}}
+
+    
+    <label class="input">
+        <span class="label">{{form.taille.label}}</span>
+        {{form.taille}}
+         
+    </label>
+   <div class="list gap-3">
+    <label class="label">
+        {{form.caractere_ascii}}
+        {{form.caractere_ascii.label}}
+    </label>
+
+    <label class="label">
+        {{form.chiffre}}
+        {{form.chiffre.label}}
+    </label>
+
+    <label class="label">
+        {{form.caractere_speciaux}}
+        {{form.caractere_speciaux.label}}
+    </label>
+</div>
     <input type="hidden" name="opp" value="{{op}}">
     <input type="hidden" name="indx" value="{{indx}}">
     <button
@@ -18,8 +39,8 @@
         Générer
 
     </button> <br>
-    <textarea type="text" name="passwd" id="passwd" value="{{pass}}" disabled>{{pass}} </textarea>
-    {% if session != "none" %}
+    <textarea type="text" name="passwd" id="passwd" value="{{pass}}" class="textarea textarea-lg text-center " disabled>{{pass}} </textarea>
+    {% if sessio != "none" %}
         {% if op == 'addata' %}
         <button><a href="{% url "addata" %}?val={{pass}}">Utiliser</a></button>
         {% elif op == 'editdata' %}
@@ -28,13 +49,13 @@
     {% endif %}
 </form>
 
-<div>
-    <h3 class="py-3">Utilisation avancée</h3>
-    <ul class="list-group">
-        <li  aria-disabled="true"><a href={% url "openfil" %}>Ouvrir un nouveau coffre fort </a></li>
-        <li ><a href={% url "openoldfil" %}>Ouvrir un coffre fort exitant</a></li>
+<div class="flex flex-col justify-center items-center gap-3">
+    <h3 class="py-3 text-4xl w-[80%] text-center">Utilisation avancée</h3>
+    <ul class="list flex flex-row justify-center gap-3 text-center">
+        <li  aria-disabled="true" class="list-row card bg-neutral text-neutral-content"><a href={% url "openfil" %} class="card-title w-[120px] h-[120px]">Ouvrir un nouveau coffre fort </a></li>
+        <li class="list-row card bg-neutral text-neutral-content"><a href={% url "openoldfil" %} class="card-title w-[120px] h-[120px]">Ouvrir un coffre fort exitant</a></li>
         {% if session != "none" %}
-        <li ><a href={% url "managefil" %}>Contunuer avec le coffre {{session}}</a></li>
+        <li class="list-row card bg-neutral text-neutral-content"><a href={% url "managefil" %} class="card-title w-[120px] h-[120px]">Contunuer avec le coffre {{session}}</a></li>
         {% endif %}
       </ul>
 </div>
