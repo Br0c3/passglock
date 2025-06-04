@@ -153,7 +153,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 TAILWIND_APP_NAME = 'theme'
-
+print("DEBUG =", DEBUG)
 if not DEBUG:
     # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
