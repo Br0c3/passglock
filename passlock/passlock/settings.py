@@ -81,14 +81,7 @@ WSGI_APPLICATION = 'passlock.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'mysite_lcpj'),
-        'USER': os.getenv('DB_USER', 'mysite'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'WaW2swXyI00BiFSDTfO6JPkNKAOSLtbQ'),
-        'HOST': os.getenv('DB_HOST', 'dpg-d105dpu3jp1c739krefg-a'),  # Ici, probablement 'localhost' est la cause
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(default='postgresql://mysite:WaW2swXyI00BiFSDTfO6JPkNKAOSLtbQ@dpg-d105dpu3jp1c739krefg-a.oregon-postgres.render.com/mysite_lcpj')
 }
 
 
