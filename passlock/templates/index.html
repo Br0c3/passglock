@@ -51,7 +51,7 @@
 
 <div class="flex flex-col justify-center items-center gap-3">
     <h3 class="py-3 text-4xl w-[80%] text-center">Utilisation avancée</h3>
-    <ul class="list flex flex-row justify-center gap-3 text-center">
+    <ul class="list flex flex-col justify-center gap-3 text-center md:flex-row">
         <li  aria-disabled="true" class="list-row card bg-neutral text-neutral-content"><a href={% url "openfil" %} class="card-title w-[120px] h-[120px]">Ouvrir un nouveau coffre fort </a></li>
         <li class="list-row card bg-neutral text-neutral-content"><a href={% url "openoldfil" %} class="card-title w-[120px] h-[120px]">Ouvrir un coffre fort exitant</a></li>
         {% if session != "none" %}
