@@ -3,7 +3,7 @@ databases:
     plan: free
     databaseName: mysite
     user: mysite
-    
+
 services:
   - type: web
     name: passglock
@@ -15,5 +15,5 @@ services:
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: passlock.settings
-    pythonVersion: 3.10
+    pythonVersion: 3.8.1
     plan: free
