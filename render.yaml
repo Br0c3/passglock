@@ -15,5 +15,4 @@ services:
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: passlock.settings
-    pythonVersion: 3.8.1
     plan: free
