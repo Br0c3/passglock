@@ -7,10 +7,10 @@ databases:
 services:
   - type: web
     plan: free
-    name: mysite
+    name: passlock
     runtime: python
     buildCommand: './build.sh'
-    startCommand: 'python -m gunicorn passlock.asgi:application -k uvicorn.workers.UvicornWorker'
+    startCommand: 'cd passlock python -m gunicorn passlock.asgi:application -k uvicorn.workers.UvicornWorker'
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -20,3 +20,4 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+
