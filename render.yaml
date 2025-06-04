@@ -1,0 +1,19 @@
+databases:
+  - name: mysitedb
+    plan: free
+    databaseName: mysite
+    user: mysite
+    
+services:
+  - type: web
+    name: passglock
+    env: python
+    buildCommand: ./build.sh
+    startCommand: |
+      cd passlock
+      gunicorn passlock.asgi:application -k uvicorn.workers.UvicornWorker
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: passlock.settings
+    pythonVersion: 3.10
+    plan: free
