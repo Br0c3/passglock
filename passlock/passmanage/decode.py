@@ -352,21 +352,18 @@ class Decoder:
         s'occupe de bien gérer la génération des clés de chiffrement et d'appeler les fonctions de dechiffrement
         Args:
         """
-        try:
-            mot = self.mot
-            
-            mot = self.aes(mot)
-            print(mot)
-            dic = {"1": self.cesar, "2": self.vignere, "3": self.base, "4": self.sub, "5": self.rotate,
-                   "6": self.vari, "7": self.pase, "8": self.rotate2, "9": self.nine, "0": self.zero}
-            for i in self.clef[::-1]:
-                mot = dic[i](mot)
-                print(i, ":", mot)
-            return mot
-        except ValueError as e:
-            print('\033[31m' + "Votre mot de passe est incorrect" + '\033[0m', mot)
-            raise PasslockError("Votre mot de passe est incorrect") from e
-            exit()
+        
+        mot = self.mot
+        
+        mot = self.aes(mot)
+        print(mot)
+        dic = {"1": self.cesar, "2": self.vignere, "3": self.base, "4": self.sub, "5": self.rotate,
+                "6": self.vari, "7": self.pase, "8": self.rotate2, "9": self.nine, "0": self.zero}
+        for i in self.clef[::-1]:
+            mot = dic[i](mot)
+            print(i, ":", mot)
+        return mot
+        
 
 
 if __name__ == "__main__":

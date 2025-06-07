@@ -152,7 +152,7 @@ def openoldfil(request):
                 request.session["file"] = jsonpickle.encode(finstce)
                 request.session["name"] = fname
                 return redirect("managefil")
-            except PasslockError as e:
+            except ValueError as e:
                 form.add_error(None, "Erreur lors de l'ouverture du fichier. Veuillez vérifier la clé et le fichier.")
                 return render(request, 'openoldfil.html', {'form': form})
     else:
