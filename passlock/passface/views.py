@@ -149,13 +149,12 @@ def openoldfil(request):
             try:
                 finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
                 finstce.f_open()
-            except ValueError as e:
+                request.session["file"] = jsonpickle.encode(finstce)
+                request.session["name"] = fname
+                return redirect("managefil")
+            except:
                 form.add_error(None, "Erreur lors de l'ouverture du fichier. Veuillez vérifier la clé et le fichier.")
-                return render(request, 'openoldfil.html', {'form': form})
-            request.session["file"] = jsonpickle.encode(finstce)
-            request.session["name"] = fname
-            return redirect("managefil")
-            
+               
     else:
         form = OpenoldForm()
     return render(request, 'openoldfil.html',{'form': form})
