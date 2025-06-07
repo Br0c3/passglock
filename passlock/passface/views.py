@@ -150,6 +150,7 @@ def openoldfil(request):
                 finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
                 finstce.f_open()
                 request.session["file"] = jsonpickle.encode(finstce)
+                flist = jsonpickle.decode(request.session["file"]).f_list()
                 request.session["name"] = fname
                 return redirect("managefil")
             except:
