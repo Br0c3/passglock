@@ -365,6 +365,7 @@ class Decoder:
             return mot
         except ValueError as e:
             print('\033[31m' + "Votre mot de passe est incorrect" + '\033[0m', mot)
+            raise PasslockError("Votre mot de passe est incorrect") from e
             exit()
 
 
