@@ -163,7 +163,7 @@ def managefil(request):
     try:
         flist = jsonpickle.decode(request.session["file"]).f_list()
         name = request.session["name"]
-    except(KeyError):
+    except:
         return redirect("index")
     return render(request, 'managefil.html', {'flist': flist, "name" : name})
 
