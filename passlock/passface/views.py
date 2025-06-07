@@ -146,11 +146,15 @@ def openoldfil(request):
         form = OpenoldForm(request.POST, request.FILES)
         if form.is_valid():
             fname = request.POST['nom_du_coffre']
-            finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
-            finstce.f_open()
-            request.session["file"] = jsonpickle.encode(finstce)
-            request.session["name"] = fname
-            return redirect("managefil")
+            try:
+                finstce = File( request.POST["clef"], request.FILES['emplacement_du_coffre'])
+                finstce.f_open()
+                request.session["file"] = jsonpickle.encode(finstce)
+                request.session["name"] = fname
+                return redirect("managefil")
+            except:
+                form.add_error(None, "Erreur lors de l'ouverture du fichier. Veuillez vérifier la clé et le fichier.")
+                return render(request, 'openoldfil.html', {'form': form})
     else:
         form = OpenoldForm()
     return render(request, 'openoldfil.html',{'form': form})
