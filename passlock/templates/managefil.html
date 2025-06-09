@@ -12,7 +12,7 @@
             class="table table-zebra text-center table-md w-full mx-auto"
         >
         <thead > 
-            <tr >
+            <tr class="break-all ">
                 {% for header in flist.0 %}
                     <th>{{header}}</th>
                 {% endfor %}
@@ -23,7 +23,7 @@
             <tbody >
                 
                 {% for list in flist|slice:'1:' %}
-                <tr class="">
+                <tr class="break-all ">
                     {% for elem in list %}
                         <td>{{elem}}</td>
                     {% endfor %}
