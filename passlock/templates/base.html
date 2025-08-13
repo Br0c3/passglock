@@ -13,7 +13,7 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=2.0">
     <title>
         Passglock - 
         {% block title %}
@@ -23,7 +23,7 @@
     <link href="{% static 'css/src/output.css' %}" rel="stylesheet">
     
 </head>
-<body class='bg-base-200 min-h-screen flex flex-col justify-between '>
+<body class='bg-base-200 min-h-screen flex flex-col justify-between w-full'>
     <header class="flex items-center ">
         <div class="navbar  shadow-sm bg-primary text-primary-content w-full">
             <div class="flex-1">
@@ -80,7 +80,7 @@
         </div>
     </header>
  
-    <div class=" w-[100%] p-3 flex flex-col justify-center items-center self-center bg-base-300 rounded-2xl m-3.5 md:w-[80%]" >
+    <div class=" w-full p-3 flex flex-col justify-center items-center self-center bg-base-300 rounded-2xl m-3.5 md:w-[80%]" >
        
         {% block content %}
             

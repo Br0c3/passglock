@@ -42,7 +42,7 @@ class File:
         
         liste = dictJsn["data"]
         liste = [list(liste[i].values()) for i in range(len(liste))]
-        liste.insert(0, ["Index" , "Nom du site", "Identifiant (pseudo, e-mail ou numéro)", "Mot de passe"])
+        liste.insert(0, ["Index" , "Lien du site", "Identifiant", "Mot de passe"])
         return liste
 
 
@@ -117,8 +117,8 @@ class File:
         dat ={}
         cles = [
             "Index" ,
-            "Nom du site",
-            "Identifiant (pseudo, e-mail ou numéro)",
+            "Lien du site",
+            "Identifiant",
             "Mot de passe"
             ]
         for i in range(len(data)):
@@ -166,13 +166,13 @@ class File:
 
         dico = json.load(self.fson)
         lignes = dico["data"]
-        print(lignes)
+    
         indx = ''
         for i in lignes:#cette boucle sert a trouver l'index de l'index
             if i['Index']== index:
                 indx = lignes.index(i)
         lignes.remove(lignes[indx])
-        print(lignes)
+        
 
         # vider le stringio
         self.fson.seek(0)

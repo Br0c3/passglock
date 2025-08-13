@@ -172,7 +172,7 @@ def addata(request):
     if request.method == 'POST':
         form = AddForm(request.POST)
         if form.is_valid():
-            fname = request.POST['nom_du_site']
+            fname = request.POST['lien_du_site']
             idnt = request.POST["identifiant"]
             key = request.POST["mot_de_passe"]
             try:

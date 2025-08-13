@@ -22,12 +22,12 @@ class OpenoldForm(forms.Form):
     clef = forms.CharField(widget=forms.PasswordInput)
 
 class AddForm(forms.Form):
-    nom_du_site = forms.CharField()
+    lien_du_site = forms.CharField()
     identifiant = forms.CharField()
     mot_de_passe = forms.CharField(widget=forms.PasswordInput, initial='booom')
 
 class AdForm(forms.Form):
-    nom_du_site = forms.CharField()
+    lien_du_site = forms.CharField(widget=forms.URLInput)
     identifiant = forms.CharField()
 
 class ModForm(forms.Form):

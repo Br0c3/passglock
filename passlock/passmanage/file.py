@@ -1,5 +1,5 @@
-import passmanage.encode
-import passmanage.decode
+import passmanage.encode as encode
+import passmanage.decode as decode
 import json
 from tabulate import tabulate
 

@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-reyr2b@%5ep%lk#t&c*sgpx#^e^29oq2@h4q%m1!_8x0)0*6^v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False").lower() in ["true", "1", "yes"]
+DEBUG = os.getenv("DEBUG", "FALSE").lower() in ["false", "1", "yes"]
 
-ALLOWED_HOSTS = ['.onrender.com']
+ALLOWED_HOSTS = ['.onrender.com','localhost','127.0.0.1']
 
 
 # Application definition
@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'passlock.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': dj_database_url.config(default='postgresql://mysite:WaW2swXyI00BiFSDTfO6JPkNKAOSLtbQ@dpg-d105dpu3jp1c739krefg-a.oregon-postgres.render.com/mysite_lcpj')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -157,4 +161,7 @@ if not DEBUG:
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    DATABASES = {
+    'default': dj_database_url.config(default='postgresql://mysite:WaW2swXyI00BiFSDTfO6JPkNKAOSLtbQ@dpg-d105dpu3jp1c739krefg-a.oregon-postgres.render.com/mysite_lcpj')
+    }
 

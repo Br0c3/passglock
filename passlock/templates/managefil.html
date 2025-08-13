@@ -4,12 +4,12 @@
 {% endblock title %}
 {% block content %}
 <h1 class="py-3 text-xl md:text-4xl">Gestion du coffre  {{name}}</h1>
-<div class="flex flex-col justify-center items-center ">
-    <div
-        class="overflow-x-auto"
-    >
+<div class=" 
+            w-full max-w-full
+            flex flex-col justify-center items-center self-center bg-base-300 rounded-2xl m-3.5 md:w-[80%]">
         <table
-            class="table table-zebra text-center table-md w-full mx-auto"
+            class="table table-zebra text-center table-xs md:table-md table-fixed
+            w-full max-w-full"
         >
         <thead > 
             <tr class="break-all ">
@@ -20,10 +20,10 @@
             </tr>
         </thead>
         
-            <tbody >
+            <tbody class="box-border"> 
                 
                 {% for list in flist|slice:'1:' %}
-                <tr class="break-all w-1">
+                <tr class="break-all min-w-0 max-w-full">
                     {% for elem in list %}
                         <td>{{elem}}</td>
                     {% endfor %}

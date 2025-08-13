@@ -406,7 +406,6 @@ class Encoder():
         for i in self.clef:
             mot = dic[i](mot)
             #print(i, ":", mot)
-        print(self.salt)
         return self.aes( mot.encode())
 
 if __name__== "__main__":

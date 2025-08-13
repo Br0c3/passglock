@@ -7,8 +7,8 @@
     <form action="{% url "addata" %}" method="post" enctype="multipart/form-data" class=" flex flex-col justify-center items-center gap-3">
         {% csrf_token %}
         <label class="input">
-            <span class="label">{{form.nom_du_site.label}}</span>
-            {{form.nom_du_site}}
+            <span class="label">{{form.lien_du_site.label}}</span>
+            {{form.lien_du_site}}
         </label>
 
         <label class="input">
