@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'passlock.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': dj_database_url.config(default='postgresql://passglock_user:vDKOk39vJzb1pWeWcNDSZXNlsrEZQ4vx@dpg-d2ebhaeuk2gs73b7kfo0-a.singapore-postgres.render.com/passglock'),
-        conn_max_age : 600,  # 10 minutes
+        'conn_max_age' : 600,  # 10 minutes
     }
 }
 
