@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'passlock.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://passglock_user:vDKOk39vJzb1pWeWcNDSZXNlsrEZQ4vx@dpg-d2ebhaeuk2gs73b7kfo0-a.singapore-postgres.render.com/passglock',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': dj_database_url.config(default='postgresql://passglock_3dzu_user:NSIkvsZ649LFYNO9jOnZWMZwUdCvIxNh@dpg-d2f1hrripnbc73aj11p0-a.ohio-postgres.render.com/passglock_3dzu'),
+        'conn_max_age' : 600,  # 10 minutes
+    }
 }
 
 # Password validation
