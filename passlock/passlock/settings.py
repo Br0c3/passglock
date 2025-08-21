@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-reyr2b@%5ep%lk#t&c*sgpx#^e^29oq2@h4q%m1!_8x0)0*6^v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "FALSE").lower() == "true"
+DEBUG = os.getenv("DEBUG", "FALSE").lower() == "false"
 
 ALLOWED_HOSTS = ['.onrender.com','localhost','127.0.0.1']
 
@@ -82,12 +82,11 @@ WSGI_APPLICATION = 'passlock.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': dj_database_url.config(default=os.environ.get("postgresql://passglock_3dzu_user:NSIkvsZ649LFYNO9jOnZWMZwUdCvIxNh@dpg-d2f1hrripnbc73aj11p0-a/passglock_3dzu")),
-        'conn_max_age' : 600,  # 10 minutes
-        'ssl_require' : True,
+    'default': dj_database_url.config(default=os.environ.get("postgresql://passglock_3dzu_user:NSIkvsZ649LFYNO9jOnZWMZwUdCvIxNh@dpg-d2f1hrripnbc73aj11p0-a/passglock_3dzu"),
+        conn_max_age = 600,  # 10 minutes
+        ssl_require = True,)
     }
-}
+
 
 
 # Password validation
